@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Camera Body -->
+  <rect x="4" y="16" width="56" height="36" rx="4" ry="4" fill="#2E2E2E"/>
+
+  <!-- Camera Top/Viewfinder -->
+  <rect x="20" y="10" width="24" height="10" rx="2" ry="2" fill="#444"/>
+
+  <!-- Flash or Shutter Box -->
+  <rect x="48" y="12" width="6" height="6" rx="1" ry="1" fill="#444"/>
+
+  <!-- Outer Lens -->
+  <circle cx="32" cy="34" r="10" fill="#FFFFFF"/>
+
+  <!-- Inner Lens Rings -->
+  <circle cx="32" cy="34" r="6" fill="#2E2E2E"/>
+  <circle cx="32" cy="34" r="3" fill="#FFFFFF"/>
+  
+  <!-- Camera Lens Reflection -->
+  <circle cx="30" cy="32" r="2" fill="#A0A0A0" opacity="0.5"/>
+
+  <!-- Camera Strap -->
+  <line x1="4" y1="16" x2="0" y2="20" stroke="#444" stroke-width="2"/>
+  <line x1="60" y1="16" x2="64" y2="20" stroke="#444" stroke-width="2"/>
+  <line x1="0" y1="20" x2="4" y2="16" stroke="#444" stroke-width="2"/>
+</svg>

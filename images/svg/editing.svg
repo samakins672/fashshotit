@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Monitor Base -->
+  <rect x="8" y="16" width="48" height="32" rx="4" ry="4" fill="#2E2E2E"/>
+
+  <!-- Stand -->
+  <rect x="28" y="50" width="8" height="4" fill="#444"/>
+  <rect x="20" y="54" width="24" height="2" rx="1" ry="1" fill="#444"/>
+
+  <!-- Timeline Bar -->
+  <rect x="14" y="24" width="36" height="4" fill="#FFFFFF"/>
+
+  <!-- Timeline Markers -->
+  <rect x="14" y="30" width="2" height="4" fill="#FFFFFF"/>
+  <rect x="20" y="30" width="2" height="4" fill="#FFFFFF"/>
+  <rect x="26" y="30" width="2" height="4" fill="#FFFFFF"/>
+  <rect x="32" y="30" width="2" height="4" fill="#FFFFFF"/>
+  <rect x="38" y="30" width="2" height="4" fill="#FFFFFF"/>
+  <rect x="44" y="30" width="2" height="4" fill="#FFFFFF"/>
+  <rect x="50" y="30" width="2" height="4" fill="#FFFFFF"/>
+</svg>
