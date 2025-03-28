@@ -1,1 +1,4 @@
 /readme.txt
+/config
+*config.php
+*/*config.php
