@@ -28,7 +28,8 @@ try {
     //Recipients
     $mail->AddReplyTo($from, $name);
     $mail->setFrom(SMTP_USERNAME, $name);
-    $mail->addAddress('media@fashshotit.com', 'Fash Shot It Media'); //Add a recipient
+    $mail->addAddress('media@fashshotit.com', 'Fash Shot It Media');
+    $mail->addAddress('fashshotitmedia@gmail.com', 'Fash Shot It');
 
     //Content
     $mail->isHTML(true); //Set email format to HTML
