@@ -551,8 +551,7 @@ var contactForm = function() {
 				email: "Please enter a valid email address",
 				message: "Please enter a message"
 			},
-			errorElement: 'span',
-			errorLabelContainer: '.form-error',
+                        errorElement: 'span',
 			/* submit via ajax */
 			submitHandler: function(form) {		
 				var $submit = $('.submitting'),
