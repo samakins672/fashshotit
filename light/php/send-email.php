@@ -22,8 +22,9 @@ if($_POST) {
 	if ($subject == '') { $subject = "Contact Form Submission"; }
 
    // Set Message
+   $message = '';
    $message .= "Email from: " . $name . "<br />";
-	 $message .= "Email address: " . $email . "<br />";
+         $message .= "Email address: " . $email . "<br />";
    $message .= "Message: <br />";
    $message .= nl2br($contact_message);
    $message .= "<br /> ----- <br /> This email was sent from your site " . url() . " contact form. <br />";
