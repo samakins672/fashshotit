@@ -3,6 +3,12 @@ import { contact } from "../data/site";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 type Status = { state: "idle" } | { state: "sending" } | { state: "sent" } | { state: "error"; message: string };
 
 type Fields = { name: string; email: string; message: string };
@@ -48,6 +54,8 @@ export default function Contact() {
       const data = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
       if (res.ok && data?.ok) {
         setStatus({ state: "sent" });
+        // Lets enquiries be marked as a key event (conversion) in Google Analytics
+        window.gtag?.("event", "generate_lead", { form: "contact" });
       } else {
         setStatus({ state: "error", message: data?.error ?? "Something went wrong. Please try again." });
       }
