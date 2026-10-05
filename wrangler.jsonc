@@ -15,6 +15,14 @@
     "CONTACT_TO": "media@fashshotit.com,fashshotitmedia@gmail.com",
     // Must be an address on a domain verified with Resend
     "CONTACT_FROM": "Fash Shot It Website <website@fashshotit.com>"
+  },
+  // Preview builds (one per non-production branch). Vars aren't inherited from above,
+  // so test enquiries go to one inbox and are clearly labelled as previews.
+  "previews": {
+    "vars": {
+      "CONTACT_TO": "fashshotitmedia@gmail.com",
+      "CONTACT_FROM": "Fash Shot It Preview <website@fashshotit.com>"
+    }
   }
   // Secret (set with `npx wrangler secret put RESEND_API_KEY`):
   //   RESEND_API_KEY
