@@ -22,7 +22,7 @@ export default function Footer() {
           <br />
           Designed with <span aria-label="love">♥</span> by{" "}
           <a href="https://sannex.ng" target="_blank" rel="noopener noreferrer">
-            Sannex Web Services
+            Sannex Tech Ltd
           </a>
         </p>
       </div>
