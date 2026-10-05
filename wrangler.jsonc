@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fashshotit",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    // Serve index.html for client-side routes like /work/real-estate
+    "not_found_handling": "single-page-application",
+    // Only API requests hit the Worker; everything else is served straight from the CDN
+    "run_worker_first": ["/api/*"]
+  },
+  "observability": { "enabled": true },
+  "vars": {
+    // Comma-separated list of inboxes that receive contact form submissions
+    "CONTACT_TO": "media@fashshotit.com,fashshotitmedia@gmail.com",
+    // Must be an address on a domain verified with Resend
+    "CONTACT_FROM": "Fash Shot It Website <website@fashshotit.com>"
+  }
+  // Secret (set with `npx wrangler secret put RESEND_API_KEY`):
+  //   RESEND_API_KEY
+}
