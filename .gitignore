@@ -1,5 +1,7 @@
-/readme.txt
-/config
-*config.php
-*/*config.php
-test.html
+node_modules
+dist
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.DS_Store
+*.log
