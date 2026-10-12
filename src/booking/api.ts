@@ -72,11 +72,15 @@ async function request<T>(path: string, init?: RequestInit): Promise<Result<T> &
   }
 }
 
+/** Throws when the API is there but failing, so an outage never falls back to pretend bookings. */
 export async function getSettings(): Promise<BookingSettings> {
   const res = await request<BookingSettings>("/settings");
   if (res.ok) {
     previewMode = false;
     return res.data;
+  }
+  if (res.status !== 404) {
+    throw new Error(res.error);
   }
   previewMode = true;
   const params = new URLSearchParams(window.location.search);

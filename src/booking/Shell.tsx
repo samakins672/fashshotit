@@ -29,6 +29,19 @@ export function PreviewBanner() {
   );
 }
 
+/** Shown when the booking API is down, in place of the page content. */
+export function Unavailable({ message }: { message: string }) {
+  return (
+    <div className="bk-wrap bk-confirm-wait" role="alert">
+      <h1>Bookings are unavailable right now</h1>
+      <p>{message} If it keeps happening, message us on WhatsApp.</p>
+      <button type="button" className="bk-btn bk-btn--outline" onClick={() => window.location.reload()}>
+        Try again
+      </button>
+    </div>
+  );
+}
+
 export function PartnerLockup({ size = "md" }: { size?: "sm" | "md" }) {
   return (
     <span className={`bk-lockup bk-lockup--${size}`}>

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useBasePath } from "./BookingApp";
-import { getSettings, isPreview } from "./api";
+import { isPreview } from "./api";
+import { useSettings } from "./useSettings";
 import { formatDate, formatNaira, included, peopleLabel, steps, type BookingSettings } from "./data";
-import { BookingFooter, BookingHeader, Icon, PartnerLockup, PreviewBanner } from "./Shell";
+import { BookingFooter, BookingHeader, Icon, PartnerLockup, PreviewBanner, Unavailable } from "./Shell";
 
 export function SlotsTracker({ settings }: { settings: BookingSettings }) {
   const shown = Math.min(settings.slotsFilled, settings.slotTarget);
@@ -74,20 +75,20 @@ function useOnScreen<T extends Element>(ready: boolean) {
 
 export default function UnilagPage() {
   const base = useBasePath();
-  const [settings, setSettings] = useState<BookingSettings | null>(null);
+  const { settings, error } = useSettings();
   const [ctaRef, ctaOnScreen] = useOnScreen<HTMLElement>(settings !== null);
-
-  useEffect(() => {
-    getSettings().then(setSettings);
-  }, []);
 
   if (!settings) {
     return (
       <div className="bk">
         <BookingHeader subtitle="UNILAG Convocation" />
-        <div className="bk-loading" aria-busy="true">
-          <span className="bk-spinner" />
-        </div>
+        {error ? (
+          <Unavailable message={error} />
+        ) : (
+          <div className="bk-loading" aria-busy="true">
+            <span className="bk-spinner" />
+          </div>
+        )}
       </div>
     );
   }

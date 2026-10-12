@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { contact } from "../data/site";
 import { useBasePath } from "./BookingApp";
-import { getSettings, isPreview } from "./api";
-import { formatNaira, occasions, services, type BookingSettings } from "./data";
+import { isPreview } from "./api";
+import { useSettings } from "./useSettings";
+import { formatNaira, occasions, services } from "./data";
 import { BookingFooter, BookingHeader, Icon, PreviewBanner } from "./Shell";
 
 const quoteLink = (service: string) =>
@@ -11,11 +11,8 @@ const quoteLink = (service: string) =>
 
 export default function BookingsHome() {
   const base = useBasePath();
-  const [unilag, setUnilag] = useState<BookingSettings | null>(null);
-
-  useEffect(() => {
-    getSettings().then(setUnilag);
-  }, []);
+  // If the booking API is down the card still links through; the UNILAG page explains the outage
+  const { settings: unilag } = useSettings();
 
   const left = unilag ? unilag.slotTarget - Math.min(unilag.slotsFilled, unilag.slotTarget) : null;
 

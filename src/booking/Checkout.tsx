@@ -1,27 +1,27 @@
-import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { useBasePath } from "./BookingApp";
 import BookingForm, { WaitlistForm } from "./BookingForm";
-import { getSettings, isPreview } from "./api";
-import { formatDate, type BookingSettings } from "./data";
-import { BookingFooter, BookingHeader, Icon, PreviewBanner } from "./Shell";
+import { isPreview } from "./api";
+import { useSettings } from "./useSettings";
+import { formatDate } from "./data";
+import { BookingFooter, BookingHeader, Icon, PreviewBanner, Unavailable } from "./Shell";
 
 export default function Checkout() {
   const base = useBasePath();
   const [params, setParams] = useSearchParams();
-  const [settings, setSettings] = useState<BookingSettings | null>(null);
-
-  useEffect(() => {
-    getSettings().then(setSettings);
-  }, []);
+  const { settings, error } = useSettings();
 
   if (!settings) {
     return (
       <div className="bk">
         <BookingHeader subtitle="UNILAG Convocation" />
-        <div className="bk-loading" aria-busy="true">
-          <span className="bk-spinner" />
-        </div>
+        {error ? (
+          <Unavailable message={error} />
+        ) : (
+          <div className="bk-loading" aria-busy="true">
+            <span className="bk-spinner" />
+          </div>
+        )}
       </div>
     );
   }
