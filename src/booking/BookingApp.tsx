@@ -1,22 +1,35 @@
 import { createContext, useContext, useEffect } from "react";
-import { Route, Routes } from "react-router";
-import BookingPage from "./BookingPage";
+import { Route, Routes, useLocation } from "react-router";
+import BookingsHome from "./BookingsHome";
+import Checkout from "./Checkout";
 import Confirmation from "./Confirmation";
+import UnilagPage from "./UnilagPage";
 import "./booking.css";
 
 /**
- * On bookings.fashshotit.com the booking page is the whole site (base "").
- * On fashshotit.com and in dev it lives under /book, so it can be previewed
- * before the subdomain is pointed at the Worker.
+ * On bookings.fashshotit.com the bookings pages are the whole site (base "").
+ * On fashshotit.com they live under /bookings.
  */
 const BasePath = createContext("");
 export const useBasePath = () => useContext(BasePath);
 
 export default function BookingApp({ base }: { base: string }) {
+  const { pathname, hash } = useLocation();
+
+  // Start each page at the top, or at its #section when the link has one
+  useEffect(() => {
+    if (!hash) {
+      window.scrollTo({ top: 0 });
+      return;
+    }
+    const frame = requestAnimationFrame(() => document.getElementById(hash.slice(1))?.scrollIntoView());
+    return () => cancelAnimationFrame(frame);
+  }, [pathname, hash]);
+
   useEffect(() => {
     document.body.classList.add("bk-body");
     const prevTitle = document.title;
-    document.title = "Book your UNILAG convocation shoot — Fash Shot It";
+    document.title = "Bookings — Fash Shot It";
     return () => {
       document.body.classList.remove("bk-body");
       document.title = prevTitle;
@@ -26,9 +39,11 @@ export default function BookingApp({ base }: { base: string }) {
   return (
     <BasePath.Provider value={base}>
       <Routes>
-        <Route index element={<BookingPage />} />
-        <Route path="confirmed" element={<Confirmation />} />
-        <Route path="*" element={<BookingPage />} />
+        <Route index element={<BookingsHome />} />
+        <Route path="unilag" element={<UnilagPage />} />
+        <Route path="unilag/checkout" element={<Checkout />} />
+        <Route path="unilag/confirmed" element={<Confirmation />} />
+        <Route path="*" element={<BookingsHome />} />
       </Routes>
     </BasePath.Provider>
   );

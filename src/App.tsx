@@ -8,7 +8,7 @@ import NotFound from "./pages/NotFound";
 // Loaded on its own so the booking page stays light on slow mobile connections
 const BookingApp = lazy(() => import("./booking/BookingApp"));
 
-/** bookings.fashshotit.com serves only the booking page, at its root */
+/** bookings.fashshotit.com serves only the bookings pages, at its root */
 const isBookingHost = () => window.location.hostname.startsWith("bookings.");
 
 export default function App() {
@@ -23,10 +23,10 @@ export default function App() {
   return (
     <Routes>
       <Route
-        path="book/*"
+        path="bookings/*"
         element={
           <Suspense>
-            <BookingApp base="/book" />
+            <BookingApp base="/bookings" />
           </Suspense>
         }
       />

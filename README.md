@@ -20,16 +20,18 @@ Most content updates only need `src/data/site.ts`:
 - **New portfolio tile:** add an entry to `portfolio`. Give it `media` to open in the lightbox, or `project` to link to a project page.
 - **New project page:** add an entry to `projects`. It appears at `/work/<slug>`.
 
-## UNILAG convocation booking page
+## Bookings
 
-`src/booking/` is the booking page for **bookings.fashshotit.com**, built from Fash's engineer brief. When the site is opened on a `bookings.` host it shows only the booking page; on any other host it's at `/book`, so it can be checked before the subdomain is set up.
+`src/booking/` holds the bookings pages for **bookings.fashshotit.com**. When the site is opened on a `bookings.` host it shows only these pages, at the root; on fashshotit.com they live under `/bookings` (linked from the nav and the hero).
 
-| Path | What it is |
+| Path (under `/bookings` on the main site) | What it is |
 |---|---|
-| `/` (or `/book`) | Hero, slots tracker, packages, what's included, how it works, Celebrate Me partner band, booking form, refund policy, FAQ and privacy notice |
-| `/confirmed?reference=<group tag>` | Paystack's callback page. It waits for the server to confirm the deposit (never trusts the redirect alone), then shows the group tag, receipt and the Celebrate Me / Pod Savings next steps |
+| `/` | Bookings home: open campaigns (UNILAG convocation) and Fash's services with a WhatsApp quote button |
+| `/unilag` | The UNILAG convocation page from Fash's brief: hero, slots tracker, packages, what's included, how it works, Celebrate Me band, refund policy and FAQ |
+| `/unilag/checkout?size=<1–6>` | The booking form and Paystack deposit, or the waitlist once the slots are full. Includes the privacy notice |
+| `/unilag/confirmed?reference=<group tag>` | Paystack's callback page. It waits for the server to confirm the deposit (never trusts the redirect alone), then shows the group tag, receipt and the Celebrate Me / Pod Savings next steps |
 
-The page talks to `/api/booking/*` (`settings`, `checkout`, `bookings/:reference`, `waitlist`), see `src/booking/api.ts`. Until those exist the page runs in **preview mode**: a banner says so, default prices are used and checkout makes a pretend booking. Add `?full` to see the waitlist state, or `?filled=12` to set the tracker.
+The UNILAG pages talk to `/api/bookings/unilag/*` (`settings`, `checkout`, `bookings/:reference`, `waitlist`), see `src/booking/api.ts`. Until those exist the pages run in **preview mode**: a banner says so, default prices are used and checkout makes a pretend booking. Add `?full` to see the waitlist state, or `?filled=12` to set the tracker.
 
 Brand colours from the brief: off-white `#F7F5F0`, muted grey `#B8B5AE`, pale yellow `#F0E6C8`.
 

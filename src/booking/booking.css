@@ -1311,6 +1311,220 @@ body.bk-body {
   margin-bottom: 8px;
 }
 
+/* ---------- Bookings home ---------- */
+.bk-hero--home {
+  background-image: url("/images/media/events/FSI (76 of 682).JPG");
+  background-position: center;
+}
+
+.bk-hero--home .bk-hero-inner {
+  padding-bottom: 72px;
+}
+
+.bk-event {
+  display: grid;
+  overflow: hidden;
+  border: 1.5px solid var(--bk-line);
+  border-radius: var(--bk-radius);
+  background: var(--bk-surface);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bk-event:hover {
+  border-color: var(--bk-ink);
+  box-shadow: 0 0 0 3px var(--bk-accent);
+}
+
+.bk-event img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+.bk-event-body {
+  padding: 20px;
+}
+
+.bk-event-tag {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--bk-accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.bk-event h3 {
+  font-size: clamp(1.3rem, 3vw, 1.6rem);
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.bk-event p {
+  color: var(--bk-ink-2);
+}
+
+.bk-event-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  .bk-event {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bk-event img {
+    height: 100%;
+    min-height: 320px;
+  }
+
+  .bk-event-body {
+    padding: 32px;
+    align-self: center;
+  }
+}
+
+.bk-services {
+  display: grid;
+  gap: 14px;
+}
+
+@media (min-width: 768px) {
+  .bk-services {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+}
+
+.bk-services article {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--bk-line);
+  border-radius: var(--bk-radius);
+  background: var(--bk-surface);
+}
+
+.bk-services img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.bk-services article > div {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 16px;
+}
+
+.bk-services h3 {
+  font-size: 17px;
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.bk-services p {
+  flex: 1;
+  font-size: 14px;
+  color: var(--bk-ink-2);
+}
+
+.bk-occasions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bk-occasions li {
+  padding: 6px 14px;
+  border: 1px solid var(--bk-grey);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ---------- UNILAG closing call to action ---------- */
+.bk-cta {
+  text-align: center;
+}
+
+.bk-cta .bk-lead {
+  margin-inline: auto;
+}
+
+/* ---------- Checkout page ---------- */
+.bk-checkout {
+  padding-top: 28px;
+}
+
+.bk-back {
+  display: inline-flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--bk-ink-2);
+  text-decoration: none;
+}
+
+.bk-back:hover {
+  color: var(--bk-ink);
+}
+
+.bk-assure {
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  color: var(--bk-ink-2);
+}
+
+.bk-assure li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.bk-assure svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.bk-assure a {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.bk-privacy {
+  margin-top: 16px;
+  padding: 0 4px;
+  font-size: 14px;
+  color: var(--bk-ink-2);
+}
+
+.bk-privacy summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--bk-ink);
+  padding: 8px 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bk *,
   .bk *::before,

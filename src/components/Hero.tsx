@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import { heroVideo } from "../data/site";
 import { usePrefersReducedMotion } from "../hooks";
 import Reveal from "./Reveal";
@@ -48,6 +49,11 @@ export default function Hero() {
             Bring your moments to life through photos, films &amp; drone shots that go <strong>Beyond Imagination.</strong>
           </Reveal>
         </p>
+        <Reveal className="hero-actions" delay={400}>
+          <Link to="/bookings" className="btn btn-solid">
+            Book a shoot
+          </Link>
+        </Reveal>
       </div>
       <a href="#portfolio" className="scroll-cue">
         <span className="mouse" aria-hidden="true">

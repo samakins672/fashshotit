@@ -1,7 +1,8 @@
 import { defaultSettings, type BookingSettings } from "./data";
 
 /**
- * Client for the booking API (served by the Worker under /api/booking).
+ * Client for the UNILAG convocation booking API (served by the Worker under
+ * /api/bookings/unilag).
  *
  * Until those endpoints exist the settings call returns 404, and the page runs
  * in preview mode: it shows a banner, uses the default settings, and checkout
@@ -57,7 +58,7 @@ export const isPreview = () => previewMode;
 
 async function request<T>(path: string, init?: RequestInit): Promise<Result<T> & { status?: number }> {
   try {
-    const res = await fetch(`/api/booking${path}`, {
+    const res = await fetch(`/api/bookings/unilag${path}`, {
       ...init,
       headers: { "Content-Type": "application/json", ...init?.headers },
     });

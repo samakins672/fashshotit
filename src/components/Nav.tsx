@@ -40,7 +40,7 @@ export default function Nav() {
           <ul className="nav-list nav-list-left">
             {left.map((l) => (
               <li key={l.id}>
-                <Link to={`/#${l.id}`}>{l.label}</Link>
+                <Link to={l.to ?? `/#${l.id}`}>{l.label}</Link>
               </li>
             ))}
           </ul>
@@ -50,7 +50,7 @@ export default function Nav() {
           <ul className="nav-list nav-list-right">
             {right.map((l) => (
               <li key={l.id}>
-                <Link to={`/#${l.id}`}>{l.label}</Link>
+                <Link to={l.to ?? `/#${l.id}`}>{l.label}</Link>
               </li>
             ))}
           </ul>
@@ -79,7 +79,7 @@ export default function Nav() {
           </li>
           {navLinks.map((l) => (
             <li key={l.id}>
-              <Link to={`/#${l.id}`} onClick={close} tabIndex={menuOpen ? 0 : -1}>
+              <Link to={l.to ?? `/#${l.id}`} onClick={close} tabIndex={menuOpen ? 0 : -1}>
                 {l.label}
               </Link>
             </li>

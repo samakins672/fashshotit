@@ -130,7 +130,7 @@ export default function Confirmation() {
   return (
     <div className="bk">
       {isPreview() && <PreviewBanner />}
-      <BookingHeader />
+      <BookingHeader subtitle="UNILAG Convocation" />
       <main className="bk-wrap bk-confirm">
         {(state.kind === "loading" || state.kind === "pending") && (
           <div className="bk-confirm-wait" aria-live="polite">
@@ -160,7 +160,7 @@ export default function Confirmation() {
           <div className="bk-confirm-wait">
             <h1>We couldn't find that booking</h1>
             <p>{state.message} If you've paid, message us on WhatsApp with your Paystack receipt.</p>
-            <Link to={base || "/"} className="bk-btn bk-btn--outline">
+            <Link to={`${base}/unilag`} className="bk-btn bk-btn--outline">
               Back to booking
             </Link>
           </div>

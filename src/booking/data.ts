@@ -39,6 +39,27 @@ export const defaultSettings: BookingSettings = {
   shootPeriod: "March 2027",
 };
 
+/** Fash's general services, listed on the bookings home page until they send real packages and prices. */
+export const services = [
+  {
+    title: "Photoshoot",
+    text: "Portraits, family and group shoots, styled on location or in studio.",
+    image: "/images/media/portraits/FSI_1764.jpg",
+  },
+  {
+    title: "Video coverage",
+    text: "Cinematic coverage of your day, edited into a film you'll want to rewatch.",
+    image: "/images/media/events/FSI (643 of 682).JPG",
+  },
+  {
+    title: "Drone shoot",
+    text: "Licensed aerial photos and video that show the whole scale of your event.",
+    image: "/images/media/commercials/DJI_0704.jpg",
+  },
+];
+
+export const occasions = ["Birthdays", "Anniversaries", "Weddings", "Convocations"];
+
 export const included = [
   {
     title: "Convocation-day photos",

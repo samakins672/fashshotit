@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import BookingForm, { WaitlistForm } from "./BookingForm";
+import { Link } from "react-router";
+import { useBasePath } from "./BookingApp";
 import { getSettings, isPreview } from "./api";
 import { formatDate, formatNaira, included, peopleLabel, steps, type BookingSettings } from "./data";
 import { BookingFooter, BookingHeader, Icon, PartnerLockup, PreviewBanner } from "./Shell";
 
-function SlotsTracker({ settings }: { settings: BookingSettings }) {
+export function SlotsTracker({ settings }: { settings: BookingSettings }) {
   const shown = Math.min(settings.slotsFilled, settings.slotTarget);
   const pct = settings.slotTarget ? (shown / settings.slotTarget) * 100 : 0;
   const left = settings.slotTarget - shown;
@@ -34,7 +35,7 @@ function SlotsTracker({ settings }: { settings: BookingSettings }) {
   );
 }
 
-const faqs = (s: BookingSettings) => [
+export const faqs = (s: BookingSettings) => [
   {
     q: "When and where is the shoot?",
     a: `On the UNILAG campus during convocation, ${s.shootPeriod}. We'll send the exact date, time and meeting point on WhatsApp once the shoot is confirmed.`,
@@ -57,7 +58,7 @@ const faqs = (s: BookingSettings) => [
   },
 ];
 
-/** True while the element is on screen (used to hide the sticky bar over the form). */
+/** True while the element is on screen (used to hide the sticky bar over the closing call to action). */
 function useOnScreen<T extends Element>(ready: boolean) {
   const ref = useRef<T>(null);
   const [on, setOn] = useState(false);
@@ -71,10 +72,10 @@ function useOnScreen<T extends Element>(ready: boolean) {
   return [ref, on] as const;
 }
 
-export default function BookingPage() {
+export default function UnilagPage() {
+  const base = useBasePath();
   const [settings, setSettings] = useState<BookingSettings | null>(null);
-  const [size, setSize] = useState(1);
-  const [formRef, formOnScreen] = useOnScreen<HTMLElement>(settings !== null);
+  const [ctaRef, ctaOnScreen] = useOnScreen<HTMLElement>(settings !== null);
 
   useEffect(() => {
     getSettings().then(setSettings);
@@ -83,7 +84,7 @@ export default function BookingPage() {
   if (!settings) {
     return (
       <div className="bk">
-        <BookingHeader />
+        <BookingHeader subtitle="UNILAG Convocation" />
         <div className="bk-loading" aria-busy="true">
           <span className="bk-spinner" />
         </div>
@@ -95,19 +96,17 @@ export default function BookingPage() {
   const minDeposit = Math.min(...settings.packages.map((p) => p.deposit));
   const ctaLabel = full ? "Join the waitlist" : "Book your slot";
 
-  const choose = (n: number) => {
-    setSize(n);
-    document.getElementById("book")?.scrollIntoView({ behavior: "smooth" });
-  };
+  const checkout = (size?: number) => `${base}/unilag/checkout${size ? `?size=${size}` : ""}`;
 
   return (
     <div className="bk">
       {isPreview() && <PreviewBanner />}
       <BookingHeader
+        subtitle="UNILAG Convocation"
         cta={
-          <a href="#book" className="bk-btn bk-btn--primary bk-btn--sm">
+          <Link to={checkout()} className="bk-btn bk-btn--primary bk-btn--sm">
             {ctaLabel}
-          </a>
+          </Link>
         }
       />
 
@@ -120,9 +119,9 @@ export default function BookingPage() {
             just half now.
           </p>
           <div className="bk-hero-actions">
-            <a href="#book" className="bk-btn bk-btn--accent">
+            <Link to={checkout()} className="bk-btn bk-btn--accent">
               {ctaLabel}
-            </a>
+            </Link>
             <a href="#packages" className="bk-btn bk-btn--ghost">
               See packages
             </a>
@@ -140,7 +139,7 @@ export default function BookingPage() {
           <p className="bk-lead">One price per group. The more of you, the less each person pays.</p>
           <div className="bk-packages">
             {settings.packages.map((p) => (
-              <article key={p.size} className={`bk-pkg${p.size === size ? " is-on" : ""}`}>
+              <article key={p.size} className="bk-pkg">
                 <header>
                   <span className="bk-pkg-icon">
                     <Icon name={p.size === 1 ? "camera" : "users"} />
@@ -161,9 +160,9 @@ export default function BookingPage() {
                     <dd>{formatNaira(p.total - p.deposit)}</dd>
                   </div>
                 </dl>
-                <button type="button" className="bk-btn bk-btn--outline bk-btn--block" onClick={() => choose(p.size)}>
-                  {full ? "Join the waitlist" : `Book for ${p.size === 1 ? "1" : p.size}`}
-                </button>
+                <Link to={checkout(p.size)} className="bk-btn bk-btn--outline bk-btn--block">
+                  {full ? "Join the waitlist" : `Book for ${p.size}`}
+                </Link>
               </article>
             ))}
           </div>
@@ -219,17 +218,17 @@ export default function BookingPage() {
         </div>
       </section>
 
-      <section id="book" ref={formRef} className="bk-section bk-section--alt">
-        <div className="bk-wrap bk-book">
-          <div className="bk-book-intro">
-            <h2 className="bk-h2">{full ? "All slots are taken" : "Book your slot"}</h2>
-            <p className="bk-lead">
-              {full
-                ? "Join the waitlist and we'll message you first if we open more slots."
-                : `Pay a 50% deposit, from ${formatNaira(minDeposit)}, to lock in your slot. Your booking is confirmed as soon as Paystack confirms your payment.`}
-            </p>
-          </div>
-          {full ? <WaitlistForm /> : <BookingForm settings={settings} size={size} onSizeChange={setSize} />}
+      <section id="book" ref={ctaRef} className="bk-section bk-section--alt">
+        <div className="bk-wrap bk-cta">
+          <h2 className="bk-h2">{full ? "All slots are taken" : "Ready to book?"}</h2>
+          <p className="bk-lead">
+            {full
+              ? "Join the waitlist and we'll message you first if we open more slots."
+              : `Pay a 50% deposit, from ${formatNaira(minDeposit)}, to lock in your slot. It takes about two minutes.`}
+          </p>
+          <Link to={checkout()} className="bk-btn bk-btn--primary">
+            {ctaLabel} <Icon name="arrow" size={18} />
+          </Link>
         </div>
       </section>
 
@@ -262,18 +261,6 @@ export default function BookingPage() {
                   <p>{f.a}</p>
                 </details>
               ))}
-              <details id="privacy">
-                <summary>Privacy notice</summary>
-                <p>
-                  Fash Shot It Media collects your name, WhatsApp number, email, faculty and department, and your group
-                  members' names, to manage your booking, contact you about the shoot and keep payment records. Payments
-                  are processed by Paystack; we never see your card details. We keep booking records for as long as the
-                  law requires and don't sell your data. We only send offers if you ask us to, and only share your
-                  details with FinZ Africa if you tick the Celebrate Me box. You can ask to see, correct or delete your
-                  data at any time by emailing media@fashshotit.com. This notice follows the Nigeria Data Protection
-                  Act, 2023.
-                </p>
-              </details>
             </div>
           </div>
         </div>
@@ -281,7 +268,7 @@ export default function BookingPage() {
 
       <BookingFooter />
 
-      <div className={`bk-sticky${formOnScreen ? " is-hidden" : ""}`} aria-hidden={formOnScreen}>
+      <div className={`bk-sticky${ctaOnScreen ? " is-hidden" : ""}`} aria-hidden={ctaOnScreen}>
         <span>
           {full ? (
             "All slots taken"
@@ -291,9 +278,9 @@ export default function BookingPage() {
             </>
           )}
         </span>
-        <a href="#book" className="bk-btn bk-btn--primary bk-btn--sm" tabIndex={formOnScreen ? -1 : 0}>
+        <Link to={checkout()} className="bk-btn bk-btn--primary bk-btn--sm" tabIndex={ctaOnScreen ? -1 : 0}>
           {ctaLabel}
-        </a>
+        </Link>
       </div>
     </div>
   );

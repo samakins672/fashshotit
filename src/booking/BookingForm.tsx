@@ -132,7 +132,7 @@ export default function BookingForm({
         members: members.map((m) => m.trim()),
       },
       settings,
-      `${base}/confirmed`,
+      `${base}/unilag/confirmed`,
     );
     if (!res.ok) {
       setFormError(res.error);
@@ -233,7 +233,9 @@ export default function BookingForm({
           <input type="checkbox" name="consent" checked={form.consent} onChange={(e) => set("consent", e.target.checked)} />
           <span>
             I agree to Fash Shot It using my details to manage this booking, as set out in the{" "}
-            <a href="#privacy">privacy notice</a>.
+            <a href="#privacy" onClick={() => document.getElementById("privacy")?.setAttribute("open", "")}>
+              privacy notice
+            </a>.
           </span>
         </label>
         {errors.consent && <span className="bk-error bk-error--check">{errors.consent}</span>}

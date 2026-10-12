@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { contact, socials } from "../data/site";
 import { useBasePath } from "./BookingApp";
 
-export function BookingHeader({ cta }: { cta?: ReactNode }) {
+export function BookingHeader({ subtitle = "Bookings", cta }: { subtitle?: string; cta?: ReactNode }) {
   const base = useBasePath();
   return (
     <header className="bk-header">
@@ -12,7 +12,7 @@ export function BookingHeader({ cta }: { cta?: ReactNode }) {
           <img src="/images/logo-tr.png" alt="" width="40" height="40" />
           <span>
             <strong>Fash Shot It</strong>
-            <small>UNILAG Convocation</small>
+            <small>{subtitle}</small>
           </span>
         </Link>
         {cta}
