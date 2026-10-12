@@ -1,0 +1,77 @@
+/**
+ * UNILAG convocation booking (bookings.fashshotit.com).
+ *
+ * Every number here is an admin setting in the brief, so the page reads them
+ * from the API and only falls back to these defaults when the API isn't there
+ * yet (local dev, preview builds).
+ */
+
+export interface BookingPackage {
+  /** Number of people, 1–6 */
+  size: number;
+  total: number;
+  deposit: number;
+}
+
+export interface BookingSettings {
+  packages: BookingPackage[];
+  /** People needed for the shoot to go ahead */
+  slotTarget: number;
+  /** People with a confirmed deposit. Shown capped at the target. */
+  slotsFilled: number;
+  /** ISO date: if the target isn't met by then, deposits are refunded */
+  refundDeadline: string;
+  shootPeriod: string;
+}
+
+export const defaultSettings: BookingSettings = {
+  packages: [
+    { size: 1, total: 35_000, deposit: 17_500 },
+    { size: 2, total: 50_000, deposit: 25_000 },
+    { size: 3, total: 70_000, deposit: 35_000 },
+    { size: 4, total: 80_000, deposit: 40_000 },
+    { size: 5, total: 90_000, deposit: 45_000 },
+    { size: 6, total: 100_000, deposit: 50_000 },
+  ],
+  slotTarget: 50,
+  slotsFilled: 0,
+  refundDeadline: "2027-01-15",
+  shootPeriod: "March 2027",
+};
+
+export const included = [
+  {
+    title: "Convocation-day photos",
+    text: "Your graduation moments on campus, edited and delivered in high resolution.",
+    image: "/images/media/portraits/FSI_1222 (2).jpg",
+  },
+  {
+    title: "Professional headshots",
+    text: "A clean, polished headshot for LinkedIn, your CV and everything after school.",
+    image: "/images/media/portraits/FSI_7683new.jpg",
+  },
+  {
+    title: "Gown rental",
+    text: "Your convocation gown is ready on the day, so there's nothing to borrow or return late.",
+    image: "/images/media/portraits/FSI_8263.jpg",
+  },
+  {
+    title: "Props & backdrops",
+    text: "Styled backdrops, balloons and props for photos that look like a celebration.",
+    image: "/images/media/portraits/FSI_4438-2.jpg",
+  },
+];
+
+export const steps = [
+  { title: "Choose a package", text: "Book for yourself, or for a group of up to 6." },
+  { title: "Pay a 50% deposit", text: "Pay securely with Paystack by card, transfer or USSD." },
+  { title: "Get your group tag", text: "You'll get a tag like FSM-ADEYEMI-012 by email. Keep it safe." },
+  { title: "Pay the balance on shoot day", text: "Quote your tag on the day and pay the remaining 50%." },
+];
+
+export const formatNaira = (n: number) => `₦${n.toLocaleString("en-NG")}`;
+
+export const formatDate = (iso: string) =>
+  new Date(`${iso}T00:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+
+export const peopleLabel = (n: number) => (n === 1 ? "1 person" : `${n} people`);
