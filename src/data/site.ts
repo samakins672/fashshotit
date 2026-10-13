@@ -238,11 +238,13 @@ export const testimonials = [
   { quote: "Good morningggg Fash,\nAwwwwn🥰 so beautiful", name: "Faith Odumosu", role: "Family Shots" },
 ];
 
-export const navLinks = [
+/** `id` links to a section on the home page; `to` links to another page. */
+export const navLinks: { id: string; label: string; to?: string }[] = [
   { id: "portfolio", label: "Portfolio" },
   { id: "about", label: "About" },
   { id: "services", label: "Services" },
   { id: "skills", label: "Skills" },
   { id: "testimonials", label: "Testimonials" },
   { id: "contact", label: "Contact" },
+  { id: "book", label: "Book", to: "/bookings" },
 ];
