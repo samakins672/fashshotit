@@ -27,11 +27,14 @@ Most content updates only need `src/data/site.ts`:
 | Path (under `/bookings` on the main site) | What it is |
 |---|---|
 | `/` | Bookings home: open campaigns (UNILAG convocation) and Fash's services with a WhatsApp quote button |
-| `/unilag` | The UNILAG convocation page from Fash's brief: hero, slots tracker, packages, what's included, how it works, Celebrate Me band, refund policy and FAQ |
-| `/unilag/checkout?size=<1–6>` | The booking form and Paystack deposit, or the waitlist once the slots are full. Includes the privacy notice |
-| `/unilag/confirmed?reference=<group tag>` | Paystack's callback page. It waits for the server to confirm the deposit (never trusts the redirect alone), then shows the group tag, receipt and the Celebrate Me / Pod Savings next steps |
+| `/unilag` | The UNILAG convocation page from Fash's brief: hero with slots tracker, packages, what's included, how it works, partners strip and questions (including the refund policy) |
+| `/unilag/checkout?size=<1–6>` | The booking form and Paystack deposit, or the waitlist once the slots are full |
+| `/unilag/confirmed?reference=<group tag>` | Paystack's callback page. It waits for the server to confirm the deposit (never trusts the redirect alone), then shows the group tag and receipt. Payers who ticked Celebrate Me get a pop-up to finish their gift page with Melody on WhatsApp |
+| `/privacy`, `/terms` | Privacy policy and terms of booking, linked from the footer and the checkout consent box |
 
 The UNILAG pages talk to `/api/bookings/unilag/*` (`settings`, `checkout`, `bookings/:reference`, `waitlist`), see `src/booking/api.ts`. Until those exist the pages run in **preview mode**: a banner says so, default prices are used and checkout makes a pretend booking. Add `?full` to see the waitlist state, or `?filled=12` to set the tracker.
+
+Still placeholders: Melody's WhatsApp number (`melodyWhatsapp`), partner logos (`partners`) and service prices, all in `src/booking/data.ts`.
 
 Brand colours from the brief: off-white `#F7F5F0`, muted grey `#B8B5AE`, pale yellow `#F0E6C8`.
 
