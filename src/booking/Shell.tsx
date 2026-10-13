@@ -1,23 +1,116 @@
-import type { ReactNode } from "react";
-import { Link } from "react-router";
-import { contact, socials } from "../data/site";
+import { useEffect, useState, type ReactNode } from "react";
+import { Link, useLocation } from "react-router";
+import { contact, navLinks, socials } from "../data/site";
 import { useBasePath } from "./BookingApp";
 
-export function BookingHeader({ subtitle = "Bookings", cta }: { subtitle?: string; cta?: ReactNode }) {
+/** Where the main site's pages live: the same origin under /bookings, or fashshotit.com on the bookings host. */
+function useSiteRoot() {
+  return useBasePath() ? "" : "https://fashshotit.com";
+}
+
+/** The main site's nav, kept solid black so it reads over photos and plain pages alike. */
+export function BookingHeader() {
   const base = useBasePath();
+  const site = useSiteRoot();
+  const { pathname } = useLocation();
+  const [open, setOpen] = useState(false);
+
+  // Close the menu after navigating, and let Escape close it
+  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    document.body.classList.toggle("menu-open", open);
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.classList.remove("menu-open");
+    };
+  }, [open]);
+
+  const sections = navLinks.filter((l) => !l.to);
+  const left = sections.slice(0, 3);
+  const right = sections.slice(3);
+  const sectionHref = (id: string) => `${site}/#${id}`;
+  const bookHome = base || "/";
+
   return (
-    <header className="bk-header">
-      <div className="bk-wrap bk-header-inner">
-        <Link to={base || "/"} className="bk-brand" aria-label="Fash Shot It bookings home">
-          <img src="/images/logo-tr.png" alt="" width="40" height="40" />
-          <span>
-            <strong>Fash Shot It</strong>
-            <small>{subtitle}</small>
-          </span>
-        </Link>
-        {cta}
+    <>
+      <header className="bk-nav">
+        <nav className="bk-nav-inner" aria-label="Main">
+          <ul className="bk-nav-list bk-nav-list--left">
+            {left.map((l) => (
+              <li key={l.id}>
+                <a href={sectionHref(l.id)}>{l.label}</a>
+              </li>
+            ))}
+          </ul>
+          <a href={`${site}/`} className="bk-nav-logo" aria-label="Fash Shot It home">
+            <img src="/images/logo-tr.png" alt="Fash Shot It" width="60" height="60" />
+          </a>
+          <ul className="bk-nav-list">
+            {right.map((l) => (
+              <li key={l.id}>
+                <a href={sectionHref(l.id)}>{l.label}</a>
+              </li>
+            ))}
+            <li>
+              <Link to={bookHome} className="bk-nav-book">
+                Book
+              </Link>
+            </li>
+          </ul>
+          <button
+            type="button"
+            className="bk-menu-btn"
+            aria-expanded={open}
+            aria-controls="bk-menu"
+            onClick={() => setOpen(true)}
+          >
+            <Icon name="menu" size={20} /> Menu
+          </button>
+        </nav>
+      </header>
+
+      <div id="bk-menu" className={`bk-menu${open ? " is-open" : ""}`} aria-hidden={!open} role="dialog" aria-label="Menu">
+        <div className="bk-menu-top">
+          <button type="button" className="bk-menu-btn" onClick={() => setOpen(false)} tabIndex={open ? 0 : -1}>
+            Close <Icon name="close" size={18} />
+          </button>
+        </div>
+        <ul className="bk-menu-list">
+          <li>
+            <a href={`${site}/`} tabIndex={open ? 0 : -1}>
+              Home
+            </a>
+          </li>
+          {sections.map((l) => (
+            <li key={l.id}>
+              <a href={sectionHref(l.id)} tabIndex={open ? 0 : -1}>
+                {l.label}
+              </a>
+            </li>
+          ))}
+          <li>
+            <Link to={bookHome} className="is-book" tabIndex={open ? 0 : -1}>
+              Book
+            </Link>
+          </li>
+        </ul>
+        <div className="bk-menu-sub">
+          <span>Bookings</span>
+          <Link to={`${base}/unilag`} tabIndex={open ? 0 : -1}>
+            UNILAG Convocation
+          </Link>
+          <Link to={`${base}/privacy`} tabIndex={open ? 0 : -1}>
+            Privacy
+          </Link>
+          <Link to={`${base}/terms`} tabIndex={open ? 0 : -1}>
+            Terms
+          </Link>
+        </div>
       </div>
-    </header>
+    </>
   );
 }
 
@@ -32,7 +125,7 @@ export function PreviewBanner() {
 /** Shown when the booking API is down, in place of the page content. */
 export function Unavailable({ message }: { message: string }) {
   return (
-    <div className="bk-wrap bk-confirm-wait" role="alert">
+    <div className="bk-wrap bk-state" role="alert">
       <h1>Bookings are unavailable right now</h1>
       <p>{message} If it keeps happening, message us on WhatsApp.</p>
       <button type="button" className="bk-btn bk-btn--outline" onClick={() => window.location.reload()}>
@@ -42,22 +135,41 @@ export function Unavailable({ message }: { message: string }) {
   );
 }
 
-export function PartnerLockup({ size = "md" }: { size?: "sm" | "md" }) {
+/** Page frame for the UNILAG pages while settings load, or when the API is down. */
+export function SettingsGate({ error }: { error: string }) {
   return (
-    <span className={`bk-lockup bk-lockup--${size}`}>
-      <img src="/images/partners/finz.png" alt="FinZ" className="bk-lockup-finz" />
-      <span aria-hidden="true">×</span>
-      <img src="/images/partners/celebrate-me.svg" alt="Celebrate Me" className="bk-lockup-cm" />
+    <div className="bk">
+      <BookingHeader />
+      {error ? (
+        <Unavailable message={error} />
+      ) : (
+        <div className="bk-loading" aria-busy="true">
+          <span className="bk-spinner" />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** "Celebrate Me by FinZ": FinZ's own logo, since Celebrate Me is a FinZ product. */
+export function CelebrateMeMark({ size = "md" }: { size?: "sm" | "md" }) {
+  return (
+    <span className={`bk-cm-mark bk-cm-mark--${size}`}>
+      <img src="/images/partners/finz.png" alt="" />
+      <span>
+        Celebrate Me <small>by FinZ</small>
+      </span>
     </span>
   );
 }
 
 export function BookingFooter() {
+  const base = useBasePath();
   return (
     <footer className="bk-footer">
       <div className="bk-wrap bk-footer-inner">
         <div>
-          <img src="/images/logo-tr.png" alt="Fash Shot It" width="56" height="56" className="bk-footer-logo" />
+          <img src="/images/logo-tr.png" alt="Fash Shot It" width="64" height="64" className="bk-footer-logo" />
           <p>Photography, video and drone coverage in Lagos.</p>
         </div>
         <div>
@@ -69,7 +181,6 @@ export function BookingFooter() {
             <br />
             <a href={`mailto:${contact.email}`}>{contact.email}</a>
           </p>
-          <p className="bk-footer-small">Quote your group tag for anything about your booking.</p>
         </div>
         <div>
           <h3>Follow</h3>
@@ -85,10 +196,44 @@ export function BookingFooter() {
         </div>
       </div>
       <div className="bk-wrap bk-footer-base">
-        <span>© {new Date().getFullYear()} Fash Shot It Media</span>
-        <span>Payments secured by Paystack · Gift pages by FinZ</span>
+        <span>
+          © {new Date().getFullYear()} Fash Shot It Media · <Link to={`${base}/privacy`}>Privacy</Link> ·{" "}
+          <Link to={`${base}/terms`}>Terms</Link>
+        </span>
+        <span>Payments secured by Paystack</span>
       </div>
     </footer>
+  );
+}
+
+/** Full-bleed photo hero that fills the first screen under the nav. */
+export function PhotoHero({
+  image,
+  imagePosition,
+  eyebrow,
+  title,
+  children,
+  aside,
+}: {
+  image: string;
+  imagePosition?: string;
+  eyebrow: string;
+  title: string;
+  children?: ReactNode;
+  aside?: ReactNode;
+}) {
+  return (
+    <section className="bk-hero">
+      <img src={image} alt="" className="bk-hero-img" style={{ objectPosition: imagePosition }} fetchPriority="high" />
+      <div className="bk-wrap bk-hero-inner">
+        <div className="bk-hero-copy">
+          <span className="bk-pill">{eyebrow}</span>
+          <h1>{title}</h1>
+          {children}
+        </div>
+        {aside}
+      </div>
+    </section>
   );
 }
 
@@ -96,10 +241,11 @@ const paths = {
   check: "M5 12.5l4.5 4.5L19 7.5",
   copy: "M9 9h10v10H9zM5 15V5h10",
   arrow: "M5 12h14M13 6l6 6-6 6",
-  camera: "M4 8h3l2-3h6l2 3h3v11H4zM12 16.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z",
   lock: "M6 11h12v9H6zM8.5 11V8a3.5 3.5 0 017 0v3",
-  gift: "M4 10h16v4H4zM6 14h12v6H6zM12 10v10M12 10c-1.5-3-5-3.5-5-1.2C7 10 9.5 10 12 10zm0 0c1.5-3 5-3.5 5-1.2 0 1.2-2.5 1.2-5 1.2z",
-  users: "M9 11a3 3 0 100-6 3 3 0 000 6zM3.5 19c.6-3 2.8-5 5.5-5s4.9 2 5.5 5M16 5.5a3 3 0 010 5.5M17.5 14c1.6.7 2.7 2.5 3 5",
+  chat: "M4 20l1.3-4A8 8 0 1112 20a8 8 0 01-3.9-1z",
+  menu: "M4 7h16M4 12h16M4 17h16",
+  close: "M6 6l12 12M18 6L6 18",
+  plus: "M12 5v14M5 12h14",
   clock: "M12 21a9 9 0 100-18 9 9 0 000 18zM12 7v5l3 2",
 } as const;
 
@@ -111,7 +257,7 @@ export function Icon({ name, size = 20 }: { name: keyof typeof paths; size?: num
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.8"
+      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"

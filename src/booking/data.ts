@@ -56,7 +56,7 @@ export const services = [
     text: "Licensed aerial photos and video that show the whole scale of your event.",
     image: "/images/media/commercials/DJI_0704.jpg",
   },
-];
+].map((s) => ({ ...s, price: "[PRICE]" }));
 
 export const occasions = ["Birthdays", "Anniversaries", "Weddings", "Convocations"];
 
@@ -86,7 +86,7 @@ export const included = [
 export const steps = [
   { title: "Choose a package", text: "Book for yourself, or for a group of up to 6." },
   { title: "Pay a 50% deposit", text: "Pay securely with Paystack by card, transfer or USSD." },
-  { title: "Get your group tag", text: "You'll get a tag like FSM-ADEYEMI-012 by email. Keep it safe." },
+  { title: "Get your group tag", text: "A tag like FSM-ADEYEMI-012 lands in your email. Keep it safe." },
   { title: "Pay the balance on shoot day", text: "Quote your tag on the day and pay the remaining 50%." },
 ];
 
@@ -96,3 +96,17 @@ export const formatDate = (iso: string) =>
   new Date(`${iso}T00:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
 export const peopleLabel = (n: number) => (n === 1 ? "1 person" : `${n} people`);
+
+/**
+ * Melody is FinZ's WhatsApp assistant. Payers who tick the Celebrate Me box finish their gift page with her.
+ * TODO: swap in Melody's real number once FinZ shares it.
+ */
+export const melodyWhatsapp = "https://wa.me/MELODY";
+
+/** Logos for the partners strip on the UNILAG page. Entries without a logo show as a placeholder tile. */
+export const partners: { name: string; logo?: string }[] = [
+  { name: "FinZ", logo: "/images/partners/finz.png" },
+  { name: "Partner" },
+  { name: "Partner" },
+  { name: "Partner" },
+];

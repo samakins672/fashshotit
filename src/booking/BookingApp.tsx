@@ -3,6 +3,7 @@ import { Route, Routes, useLocation } from "react-router";
 import BookingsHome from "./BookingsHome";
 import Checkout from "./Checkout";
 import Confirmation from "./Confirmation";
+import { Privacy, Terms } from "./Legal";
 import UnilagPage from "./UnilagPage";
 import "./booking.css";
 
@@ -43,6 +44,8 @@ export default function BookingApp({ base }: { base: string }) {
         <Route path="unilag" element={<UnilagPage />} />
         <Route path="unilag/checkout" element={<Checkout />} />
         <Route path="unilag/confirmed" element={<Confirmation />} />
+        <Route path="privacy" element={<Privacy />} />
+        <Route path="terms" element={<Terms />} />
         <Route path="*" element={<BookingsHome />} />
       </Routes>
     </BasePath.Provider>

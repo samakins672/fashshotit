@@ -1,8 +1,9 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { Link } from "react-router";
 import { useBasePath } from "./BookingApp";
 import { joinWaitlist, startCheckout, type CheckoutRequest } from "./api";
-import { formatNaira, peopleLabel, type BookingSettings } from "./data";
-import { Icon, PartnerLockup } from "./Shell";
+import { formatDate, formatNaira, peopleLabel, type BookingSettings } from "./data";
+import { CelebrateMeMark, Icon } from "./Shell";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -19,15 +20,17 @@ function Field({
   label,
   hint,
   error,
+  wide,
   children,
 }: {
   label: string;
   hint?: string;
   error?: string;
+  wide?: boolean;
   children: ReactNode;
 }) {
   return (
-    <label className={`bk-field${error ? " has-error" : ""}`}>
+    <label className={`bk-field${error ? " has-error" : ""}${wide ? " bk-field--wide" : ""}`}>
       <span className="bk-label">{label}</span>
       {children}
       {error ? <span className="bk-error">{error}</span> : hint ? <span className="bk-hint">{hint}</span> : null}
@@ -107,7 +110,7 @@ export default function BookingForm({
     if (!EMAIL_RE.test(form.email.trim())) e.email = "Enter a valid email address.";
     if (!form.faculty.trim()) e.faculty = "Enter your faculty.";
     if (!form.department.trim()) e.department = "Enter your department.";
-    if (!form.consent) e.consent = "Please agree to the privacy notice to continue.";
+    if (!form.consent) e.consent = "Please agree to the privacy policy and terms to continue.";
     return e;
   };
 
@@ -145,135 +148,145 @@ export default function BookingForm({
   const isGroup = size > 1;
 
   return (
-    <form className="bk-form" onSubmit={onSubmit} noValidate>
-      <fieldset className="bk-fieldset">
-        <legend>1. Choose your package</legend>
-        <PackagePicker settings={settings} value={size} onChange={onSizeChange} />
-        <p className="bk-picker-note">
-          {peopleLabel(pkg.size)} · {formatNaira(pkg.total)} total
-          {isGroup && <> · {formatNaira(Math.round(pkg.total / pkg.size))} each</>}
-        </p>
-      </fieldset>
+    <form className="bk-checkout-grid" onSubmit={onSubmit} noValidate>
+      <div className="bk-form">
+        <fieldset className="bk-fieldset">
+          <legend>1 · How many people?</legend>
+          <PackagePicker settings={settings} value={size} onChange={onSizeChange} />
+          <p className="bk-picker-note">
+            {peopleLabel(pkg.size)} · {formatNaira(pkg.total)} total
+            {isGroup && <> · {formatNaira(Math.round(pkg.total / pkg.size))} each</>}
+          </p>
+        </fieldset>
 
-      <fieldset className="bk-fieldset">
-        <legend>2. Your details</legend>
-        <p className="bk-fieldset-note">
-          {isGroup
-            ? "You're paying for the group, so we'll send the booking to you."
-            : "We'll send your booking and group tag here."}
-        </p>
+        <fieldset className="bk-fieldset">
+          <legend>2 · Your details</legend>
+          <div className="bk-grid-2">
+            <Field label="Full name" error={errors.name}>
+              <input name="name" autoComplete="name" value={form.name} onChange={(e) => set("name", e.target.value)} />
+            </Field>
+            <Field label="WhatsApp number" error={errors.phone}>
+              <input
+                name="phone"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                placeholder="0803 123 4567"
+                value={form.phone}
+                onChange={(e) => set("phone", e.target.value)}
+              />
+            </Field>
+            <Field label="Email" hint="Your receipt and group tag go here." error={errors.email} wide>
+              <input
+                name="email"
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                placeholder="you@example.com"
+                value={form.email}
+                onChange={(e) => set("email", e.target.value)}
+              />
+            </Field>
+            <Field label="Faculty" error={errors.faculty}>
+              <input name="faculty" placeholder="e.g. Engineering" value={form.faculty} onChange={(e) => set("faculty", e.target.value)} />
+            </Field>
+            <Field label="Department" error={errors.department}>
+              <input
+                name="department"
+                placeholder="e.g. Law"
+                value={form.department}
+                onChange={(e) => set("department", e.target.value)}
+              />
+            </Field>
+          </div>
+        </fieldset>
+
+        {isGroup && (
+          <fieldset className="bk-fieldset">
+            <legend>
+              3 · Your group <span className="bk-optional">Optional</span>
+            </legend>
+            <p className="bk-fieldset-note">Add your friends' names now or send them to us on WhatsApp later.</p>
+            <div className="bk-grid-2">
+              {members.map((m, i) => (
+                <input
+                  key={i}
+                  aria-label={`Person ${i + 2} name`}
+                  placeholder={`Person ${i + 2} name`}
+                  value={m}
+                  onChange={(e) => setMembers((all) => all.map((x, j) => (j === i ? e.target.value : x)))}
+                />
+              ))}
+            </div>
+          </fieldset>
+        )}
+
         <div className="bk-grid-2">
-          <Field label="Full name" error={errors.name}>
-            <input name="name" autoComplete="name" value={form.name} onChange={(e) => set("name", e.target.value)} />
-          </Field>
-          <Field label="WhatsApp number" error={errors.phone}>
-            <input
-              name="phone"
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              placeholder="0803 123 4567"
-              value={form.phone}
-              onChange={(e) => set("phone", e.target.value)}
-            />
-          </Field>
-          <Field label="Email" error={errors.email}>
-            <input
-              name="email"
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              value={form.email}
-              onChange={(e) => set("email", e.target.value)}
-            />
-          </Field>
-          <Field label="Faculty" error={errors.faculty}>
-            <input name="faculty" placeholder="e.g. Engineering" value={form.faculty} onChange={(e) => set("faculty", e.target.value)} />
-          </Field>
-          <Field label="Department" error={errors.department}>
-            <input
-              name="department"
-              placeholder="e.g. Systems Engineering"
-              value={form.department}
-              onChange={(e) => set("department", e.target.value)}
-            />
-          </Field>
           <Field label="Ambassador code (optional)" hint="If a Fash ambassador referred you. It doesn't change the price.">
             <input
               name="ambassadorCode"
+              className="bk-input-dashed"
               autoCapitalize="characters"
+              placeholder="e.g. AMB-KEMI"
               value={form.ambassadorCode}
               onChange={(e) => set("ambassadorCode", e.target.value.toUpperCase())}
             />
           </Field>
         </div>
 
-        {isGroup && (
-          <div className="bk-members">
-            <span className="bk-label">Who else is in your group? (optional)</span>
-            <div className="bk-grid-2">
-              {members.map((m, i) => (
-                <input
-                  key={i}
-                  aria-label={`Group member ${i + 2} name`}
-                  placeholder={`Member ${i + 2}'s name`}
-                  value={m}
-                  onChange={(e) => setMembers((all) => all.map((x, j) => (j === i ? e.target.value : x)))}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-      </fieldset>
+        <fieldset className="bk-fieldset">
+          <legend>{isGroup ? 4 : 3} · Consent</legend>
 
-      <fieldset className="bk-fieldset">
-        <legend>3. Agree and pay</legend>
-
-        <label className={`bk-check${errors.consent ? " has-error" : ""}`}>
-          <input type="checkbox" name="consent" checked={form.consent} onChange={(e) => set("consent", e.target.checked)} />
-          <span>
-            I agree to Fash Shot It using my details to manage this booking, as set out in the{" "}
-            <a href="#privacy" onClick={() => document.getElementById("privacy")?.setAttribute("open", "")}>
-              privacy notice
-            </a>.
-          </span>
-        </label>
-        {errors.consent && <span className="bk-error bk-error--check">{errors.consent}</span>}
-
-        <label className="bk-check">
-          <input type="checkbox" checked={form.marketingOptIn} onChange={(e) => set("marketingOptIn", e.target.checked)} />
-          <span>Send me Fash Shot It offers and updates. I can opt out at any time.</span>
-        </label>
-
-        <label className={`bk-check bk-check--finz${form.finzOptIn ? " is-on" : ""}`}>
-          <input type="checkbox" checked={form.finzOptIn} onChange={(e) => set("finzOptIn", e.target.checked)} />
-          <span>
-            <PartnerLockup size="sm" />
-            <strong>
-              {isGroup
-                ? "Set up my free Celebrate Me gift page and group savings with FinZ."
-                : "Set up my free Celebrate Me gift page with FinZ."}
-            </strong>{" "}
-            Friends and family can send wishes and gifts, and help pay your balance. If you tick this, we share your
-            name, phone, email, group tag, package and balance with FinZ Africa to set it up.
-          </span>
-        </label>
-
-        <div className="bk-summary" aria-live="polite">
-          <div>
-            <span>Package</span>
+          <label className={`bk-check${errors.consent ? " has-error" : ""}`}>
+            <input type="checkbox" name="consent" checked={form.consent} onChange={(e) => set("consent", e.target.checked)} />
             <span>
-              {peopleLabel(pkg.size)} · {formatNaira(pkg.total)}
+              I agree to Fash Shot It using my details to manage this booking, as set out in the{" "}
+              <Link to={`${base}/privacy`} target="_blank">
+                privacy policy
+              </Link>{" "}
+              and{" "}
+              <Link to={`${base}/terms`} target="_blank">
+                terms
+              </Link>
+              . <span className="bk-muted">Required</span>
             </span>
-          </div>
-          <div>
-            <span>Balance on shoot day</span>
-            <span>{formatNaira(pkg.total - pkg.deposit)}</span>
-          </div>
-          <div className="bk-summary-total">
-            <span>Pay now (50% deposit)</span>
-            <span>{formatNaira(pkg.deposit)}</span>
-          </div>
+          </label>
+          {errors.consent && <span className="bk-error bk-error--check">{errors.consent}</span>}
+
+          <label className="bk-check">
+            <input type="checkbox" checked={form.marketingOptIn} onChange={(e) => set("marketingOptIn", e.target.checked)} />
+            <span>Send me offers and updates from Fash Shot It.</span>
+          </label>
+
+          <label className={`bk-check bk-check--finz${form.finzOptIn ? " is-on" : ""}`}>
+            <input type="checkbox" checked={form.finzOptIn} onChange={(e) => set("finzOptIn", e.target.checked)} />
+            <span>
+              <CelebrateMeMark size="sm" />
+              <strong>Get a free gift page.</strong> After you pay, Melody from FinZ will message you on WhatsApp to set up
+              your Celebrate Me page. Gifts go straight to Fash Shot It towards your balance. Ticking this shares your
+              name, phone, email, group tag and balance with FinZ Africa.
+            </span>
+          </label>
+        </fieldset>
+      </div>
+
+      <aside className="bk-summary" aria-live="polite">
+        <img src="/images/media/portraits/FSI_7628.jpg" alt="" className="bk-summary-img" />
+        <div className="bk-summary-title">
+          <span className="bk-kicker">UNILAG Convocation</span>
+          <strong>{pkg.size === 1 ? "Solo package" : `${pkg.size}-person package`}</strong>
+        </div>
+        <div className="bk-summary-row">
+          <span>Package total</span>
+          <span>{formatNaira(pkg.total)}</span>
+        </div>
+        <div className="bk-summary-row">
+          <span>Balance on shoot day</span>
+          <span>{formatNaira(pkg.total - pkg.deposit)}</span>
+        </div>
+        <div className="bk-summary-total">
+          <span>Pay today (50%)</span>
+          <strong>{formatNaira(pkg.deposit)}</strong>
         </div>
 
         {formError && (
@@ -282,13 +295,15 @@ export default function BookingForm({
           </p>
         )}
 
-        <button type="submit" className="bk-btn bk-btn--primary bk-btn--block" disabled={submitting}>
+        <button type="submit" className="bk-btn bk-btn--accent bk-btn--block" disabled={submitting}>
+          <Icon name="lock" size={18} />
           {submitting ? "Opening secure checkout…" : `Pay ${formatNaira(pkg.deposit)} deposit`}
         </button>
-        <p className="bk-secure">
-          <Icon name="lock" size={16} /> Secure payment by Paystack. Card, bank transfer or USSD.
+        <p className="bk-summary-note">
+          Card, transfer or USSD through Paystack. Full refund if we don't reach {settings.slotTarget} people by{" "}
+          {formatDate(settings.refundDeadline)}.
         </p>
-      </fieldset>
+      </aside>
     </form>
   );
 }

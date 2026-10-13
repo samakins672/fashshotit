@@ -3,23 +3,24 @@ import { Link } from "react-router";
 import { useBasePath } from "./BookingApp";
 import { isPreview } from "./api";
 import { useSettings } from "./useSettings";
-import { formatDate, formatNaira, included, peopleLabel, steps, type BookingSettings } from "./data";
-import { BookingFooter, BookingHeader, Icon, PartnerLockup, PreviewBanner, Unavailable } from "./Shell";
+import { formatDate, formatNaira, included, partners, peopleLabel, steps, type BookingSettings } from "./data";
+import { BookingFooter, BookingHeader, Icon, PhotoHero, PreviewBanner, SettingsGate } from "./Shell";
 
-export function SlotsTracker({ settings }: { settings: BookingSettings }) {
+/** Filled/target bar, shared with the bookings home card. */
+export function SlotsBar({ settings, note }: { settings: BookingSettings; note?: boolean }) {
   const shown = Math.min(settings.slotsFilled, settings.slotTarget);
   const pct = settings.slotTarget ? (shown / settings.slotTarget) * 100 : 0;
   const left = settings.slotTarget - shown;
   return (
-    <div className="bk-tracker">
-      <div className="bk-tracker-head">
-        <p>
-          <strong>{shown}</strong> of {settings.slotTarget} slots filled
-        </p>
-        <span>{left > 0 ? `${left} left` : "Full"}</span>
+    <div className="bk-slots">
+      <div className="bk-slots-head">
+        <span>
+          {shown} of {settings.slotTarget} slots filled
+        </span>
+        <span className="bk-slots-left">{left > 0 ? `${left} left` : "Full"}</span>
       </div>
       <div
-        className="bk-tracker-bar"
+        className="bk-slots-bar"
         role="progressbar"
         aria-label="Slots filled"
         aria-valuemin={0}
@@ -28,15 +29,21 @@ export function SlotsTracker({ settings }: { settings: BookingSettings }) {
       >
         <span style={{ width: `${pct}%` }} />
       </div>
-      <p className="bk-tracker-note">
-        The shoot goes ahead once {settings.slotTarget} people have booked. If we don't get there by{" "}
-        {formatDate(settings.refundDeadline)}, every deposit is refunded in full.
-      </p>
+      {note && (
+        <p className="bk-slots-note">
+          The shoot goes ahead at {settings.slotTarget} people. If we don't get there by{" "}
+          {formatDate(settings.refundDeadline)}, everyone gets a full refund.
+        </p>
+      )}
     </div>
   );
 }
 
 export const faqs = (s: BookingSettings) => [
+  {
+    q: "What if the shoot doesn't happen?",
+    a: `If we don't reach ${s.slotTarget} people by ${formatDate(s.refundDeadline)}, the shoot won't go ahead and every deposit is refunded in full, including processing fees, to your original payment method within 10 working days.`,
+  },
   {
     q: "When and where is the shoot?",
     a: `On the UNILAG campus during convocation, ${s.shootPeriod}. We'll send the exact date, time and meeting point on WhatsApp once the shoot is confirmed.`,
@@ -47,15 +54,15 @@ export const faqs = (s: BookingSettings) => [
   },
   {
     q: "Can friends and family help pay my balance?",
-    a: "Yes. Tick the Celebrate Me box when you book and you'll get a free gift page from FinZ. Anyone you share it with can send wishes and gifts towards your balance, and it goes straight to Fash Shot It against your group tag.",
+    a: "Yes. Tick the Celebrate Me box at checkout and Melody from FinZ will message you on WhatsApp to set up a free gift page. Gifts are paid straight to Fash Shot It and come off your balance.",
+  },
+  {
+    q: "Can I cancel after I pay?",
+    a: "Once the shoot is confirmed your deposit isn't refundable, but you can pass your booking to another student by messaging us with your group tag at least 7 days before the shoot. If Fash Shot It cancels or reschedules, you get a full refund or can move to the new date.",
   },
   {
     q: "What is an ambassador code?",
     a: "If a Fash ambassador told you about the shoot, enter their code so they get credit. It doesn't change your price.",
-  },
-  {
-    q: "Can I change my group size after booking?",
-    a: "Message us on WhatsApp with your group tag and we'll help you sort it out before the shoot.",
   },
 ];
 
@@ -73,107 +80,113 @@ function useOnScreen<T extends Element>(ready: boolean) {
   return [ref, on] as const;
 }
 
+function PartnersStrip() {
+  // Two copies side by side so the -50% scroll loops without a jump
+  const row = [...partners, ...partners];
+  return (
+    <section className="bk-section bk-partners" aria-labelledby="bk-partners-title">
+      <div className="bk-wrap bk-partners-inner">
+        <div>
+          <span className="bk-kicker">Our partners</span>
+          <h2 id="bk-partners-title" className="bk-h2">
+            Brought to you with
+          </h2>
+        </div>
+        <div className="bk-marquee">
+          <ul className="bk-marquee-track">
+            {row.map((p, i) => (
+              <li key={i} aria-hidden={i >= partners.length} className={p.logo ? "" : "is-empty"}>
+                {p.logo ? (
+                  <>
+                    <img src={p.logo} alt="" />
+                    <span>{p.name}</span>
+                  </>
+                ) : (
+                  "Partner logo"
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function UnilagPage() {
   const base = useBasePath();
   const { settings, error } = useSettings();
-  const [ctaRef, ctaOnScreen] = useOnScreen<HTMLElement>(settings !== null);
+  const [ctaRef, ctaOnScreen] = useOnScreen<HTMLAnchorElement>(settings !== null);
 
-  if (!settings) {
-    return (
-      <div className="bk">
-        <BookingHeader subtitle="UNILAG Convocation" />
-        {error ? (
-          <Unavailable message={error} />
-        ) : (
-          <div className="bk-loading" aria-busy="true">
-            <span className="bk-spinner" />
-          </div>
-        )}
-      </div>
-    );
-  }
+  if (!settings) return <SettingsGate error={error} />;
 
   const full = settings.slotsFilled >= settings.slotTarget;
   const minDeposit = Math.min(...settings.packages.map((p) => p.deposit));
   const ctaLabel = full ? "Join the waitlist" : "Book your slot";
-
   const checkout = (size?: number) => `${base}/unilag/checkout${size ? `?size=${size}` : ""}`;
+  // The middle package gets the "Popular" badge
+  const popular = settings.packages[Math.floor((settings.packages.length - 1) / 2)]?.size;
 
   return (
     <div className="bk">
       {isPreview() && <PreviewBanner />}
-      <BookingHeader
-        subtitle="UNILAG Convocation"
-        cta={
-          <Link to={checkout()} className="bk-btn bk-btn--primary bk-btn--sm">
+      <BookingHeader />
+
+      <PhotoHero
+        image="/images/media/portraits/FSI_7628.jpg"
+        imagePosition="center 22%"
+        eyebrow={`${settings.shootPeriod} · UNILAG`}
+        title="Your convocation, shot beautifully."
+        aside={
+          <div className="bk-hero-card">
+            <SlotsBar settings={settings} note />
+          </div>
+        }
+      >
+        <p className="bk-hero-sub">Photos, a headshot, your gown and props, all on the day. Book alone or with up to 5 friends.</p>
+        <div className="bk-hero-actions bk-hero-actions--wide">
+          <Link to={checkout()} className="bk-btn bk-btn--accent">
             {ctaLabel}
           </Link>
-        }
-      />
-
-      <section className="bk-hero">
-        <div className="bk-wrap bk-hero-inner">
-          <p className="bk-eyebrow">UNILAG Convocation · {settings.shootPeriod}</p>
-          <h1>Your convocation, shot beautifully.</h1>
-          <p className="bk-hero-sub">
-            Photos, headshots, gown and props on the day, by Fash Shot It. Book alone or with up to 5 friends, and pay
-            just half now.
-          </p>
-          <div className="bk-hero-actions">
-            <Link to={checkout()} className="bk-btn bk-btn--accent">
-              {ctaLabel}
-            </Link>
-            <a href="#packages" className="bk-btn bk-btn--ghost">
-              See packages
-            </a>
-          </div>
+          <a href="#packages" className="bk-btn bk-btn--ghost">
+            See packages
+          </a>
         </div>
-      </section>
-
-      <div className="bk-wrap bk-tracker-wrap">
-        <SlotsTracker settings={settings} />
-      </div>
+      </PhotoHero>
 
       <section id="packages" className="bk-section">
-        <div className="bk-wrap">
-          <h2 className="bk-h2">Packages</h2>
-          <p className="bk-lead">One price per group. The more of you, the less each person pays.</p>
-          <div className="bk-packages">
-            {settings.packages.map((p) => (
-              <article key={p.size} className="bk-pkg">
-                <header>
-                  <span className="bk-pkg-icon">
-                    <Icon name={p.size === 1 ? "camera" : "users"} />
-                  </span>
-                  <h3>{peopleLabel(p.size)}</h3>
-                </header>
-                <p className="bk-pkg-total">{formatNaira(p.total)}</p>
-                <p className="bk-pkg-each">
-                  {p.size > 1 ? `${formatNaira(Math.round(p.total / p.size))} per person` : "Just you"}
-                </p>
-                <dl>
-                  <div>
-                    <dt>Deposit now</dt>
-                    <dd>{formatNaira(p.deposit)}</dd>
-                  </div>
-                  <div>
-                    <dt>On shoot day</dt>
-                    <dd>{formatNaira(p.total - p.deposit)}</dd>
-                  </div>
-                </dl>
-                <Link to={checkout(p.size)} className="bk-btn bk-btn--outline bk-btn--block">
-                  {full ? "Join the waitlist" : `Book for ${p.size}`}
-                </Link>
-              </article>
-            ))}
+        <div className="bk-wrap bk-split">
+          <div className="bk-split-intro">
+            <h2 className="bk-h2">Pick your package</h2>
+            <p className="bk-lead">The bigger the group, the less each person pays. Pay half now to hold your slot, and the rest on shoot day.</p>
+            <Link to={checkout()} className="bk-btn bk-btn--primary bk-only-wide">
+              {ctaLabel} <Icon name="arrow" size={18} />
+            </Link>
           </div>
+          <ul className="bk-packages">
+            {settings.packages.map((p) => (
+              <li key={p.size}>
+                <Link to={checkout(p.size)} className={`bk-pkg${p.size === popular ? " is-popular" : ""}`}>
+                  <span className="bk-pkg-name">
+                    <strong>{p.size === 1 ? "Just me" : peopleLabel(p.size)}</strong>
+                    {p.size > 1 && <small>{formatNaira(Math.round(p.total / p.size))} each</small>}
+                  </span>
+                  <span className="bk-pkg-deposit">{formatNaira(p.deposit)} deposit</span>
+                  <strong className="bk-pkg-total">{formatNaira(p.total)}</strong>
+                  <Icon name="arrow" size={18} />
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link to={checkout()} className="bk-btn bk-btn--primary bk-btn--block bk-only-narrow">
+            {ctaLabel} <Icon name="arrow" size={18} />
+          </Link>
         </div>
       </section>
 
-      <section className="bk-section bk-section--alt">
+      <section className="bk-section bk-section--flush-top">
         <div className="bk-wrap">
-          <h2 className="bk-h2">What's included</h2>
-          <p className="bk-lead">Every package comes with all of this, for everyone in your group.</p>
+          <h2 className="bk-h2">Every package includes</h2>
           <div className="bk-included">
             {included.map((item) => (
               <article key={item.title}>
@@ -186,84 +199,44 @@ export default function UnilagPage() {
         </div>
       </section>
 
-      <section className="bk-section">
+      <section id="how" className="bk-section bk-dark">
         <div className="bk-wrap">
           <h2 className="bk-h2">How it works</h2>
           <ol className="bk-steps">
             {steps.map((s, i) => (
               <li key={s.title}>
                 <span className="bk-step-num">{i + 1}</span>
-                <h3>{s.title}</h3>
-                <p>{s.text}</p>
+                <div>
+                  <h3>{s.title}</h3>
+                  <p>{s.text}</p>
+                </div>
               </li>
             ))}
           </ol>
         </div>
       </section>
 
-      <section className="bk-section bk-section--tight">
-        <div className="bk-wrap">
-          <div className="bk-partner">
-            <div>
-              <PartnerLockup />
-              <h2>Let friends and family chip in</h2>
-              <p>
-                Book with Fash and get a free Celebrate Me gift page and flier from FinZ. Share it on your socials, and
-                the people who love you can send wishes and gifts, and help pay your balance before the big day.
-              </p>
-            </div>
-            <span className="bk-partner-icon">
-              <Icon name="gift" size={40} />
-            </span>
-          </div>
-        </div>
-      </section>
+      <PartnersStrip />
 
-      <section id="book" ref={ctaRef} className="bk-section bk-section--alt">
-        <div className="bk-wrap bk-cta">
-          <h2 className="bk-h2">{full ? "All slots are taken" : "Ready to book?"}</h2>
-          <p className="bk-lead">
-            {full
-              ? "Join the waitlist and we'll message you first if we open more slots."
-              : `Pay a 50% deposit, from ${formatNaira(minDeposit)}, to lock in your slot. It takes about two minutes.`}
-          </p>
-          <Link to={checkout()} className="bk-btn bk-btn--primary">
-            {ctaLabel} <Icon name="arrow" size={18} />
-          </Link>
-        </div>
-      </section>
-
-      <section id="refunds" className="bk-section">
-        <div className="bk-wrap bk-policy">
-          <div>
-            <h2 className="bk-h2">Refund policy</h2>
-            <ul className="bk-policy-list">
-              <li>
-                If we don't reach {settings.slotTarget} confirmed students by {formatDate(settings.refundDeadline)}, the
-                shoot won't go ahead and your deposit is refunded in full, including any processing fees, to your
-                original payment method within 10 working days.
-              </li>
-              <li>If Fash Shot It cancels or reschedules, you get a full refund or can move your booking to the new date.</li>
-              <li>
-                If you cancel after the shoot is confirmed, your deposit isn't refundable, because your slot and
-                preparation are already committed. You can pass your booking to another student by contacting us with
-                your group tag at least 7 days before the shoot.
-              </li>
-              <li>If you don't show up, the deposit is forfeited and no balance is due.</li>
-              <li>Your remaining 50% is paid on the day of your shoot. Quote your group tag for any request.</li>
-            </ul>
-          </div>
+      <section id="faq" className="bk-section bk-section--last">
+        <div className="bk-wrap bk-faq-wrap">
           <div>
             <h2 className="bk-h2">Questions</h2>
-            <div className="bk-faq">
-              {faqs(settings).map((f) => (
-                <details key={f.q}>
-                  <summary>{f.q}</summary>
+            <div id="refunds" className="bk-faq">
+              {faqs(settings).map((f, i) => (
+                <details key={f.q} open={i === 0}>
+                  <summary>
+                    {f.q}
+                    <Icon name="plus" size={20} />
+                  </summary>
                   <p>{f.a}</p>
                 </details>
               ))}
             </div>
           </div>
+          <Link ref={ctaRef} to={checkout()} className="bk-btn bk-btn--primary bk-faq-cta">
+            {full ? "Join the waitlist" : `${ctaLabel} · from ${formatNaira(minDeposit)} today`}
+          </Link>
         </div>
       </section>
 
@@ -279,7 +252,7 @@ export default function UnilagPage() {
             </>
           )}
         </span>
-        <Link to={checkout()} className="bk-btn bk-btn--primary bk-btn--sm" tabIndex={ctaOnScreen ? -1 : 0}>
+        <Link to={checkout()} className="bk-btn bk-btn--accent bk-btn--sm" tabIndex={ctaOnScreen ? -1 : 0}>
           {ctaLabel}
         </Link>
       </div>

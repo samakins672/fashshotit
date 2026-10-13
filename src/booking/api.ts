@@ -1,4 +1,4 @@
-import { defaultSettings, type BookingSettings } from "./data";
+import { defaultSettings, melodyWhatsapp, type BookingSettings } from "./data";
 
 /**
  * Client for the UNILAG convocation booking API (served by the Worker under
@@ -20,7 +20,7 @@ export interface CheckoutRequest {
   ambassadorCode: string;
   consent: boolean;
   marketingOptIn: boolean;
-  /** Unticked by default: share booking details with FinZ to set up Celebrate Me (and Pod Savings for groups) */
+  /** Unticked by default: share booking details with FinZ so Melody can set up a Celebrate Me gift page */
   finzOptIn: boolean;
 }
 
@@ -38,9 +38,8 @@ export interface Booking {
   balance: number;
   shootPeriod: string;
   finzOptIn: boolean;
-  /** Links FinZ returns when the payer opted in */
+  /** Melody's WhatsApp chat link FinZ returns when the payer opted in */
   giftPageUrl?: string;
-  podUrl?: string;
 }
 
 export interface WaitlistRequest {
@@ -118,8 +117,7 @@ export async function startCheckout(
     balance: pkg.total - pkg.deposit,
     shootPeriod: settings.shootPeriod,
     finzOptIn: req.finzOptIn,
-    giftPageUrl: req.finzOptIn ? "https://celebrate.ink" : undefined,
-    podUrl: req.finzOptIn && req.packageSize > 1 ? "https://finz.africa" : undefined,
+    giftPageUrl: req.finzOptIn ? melodyWhatsapp : undefined,
   };
   try {
     const all = JSON.parse(sessionStorage.getItem(PREVIEW_KEY) ?? "{}");

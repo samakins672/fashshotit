@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { useBasePath } from "./BookingApp";
 import { getBooking, isPreview, type Booking } from "./api";
-import { formatNaira, peopleLabel } from "./data";
-import { BookingFooter, BookingHeader, Icon, PartnerLockup, PreviewBanner } from "./Shell";
+import { formatNaira, melodyWhatsapp, peopleLabel } from "./data";
+import { BookingFooter, BookingHeader, CelebrateMeMark, Icon, PreviewBanner } from "./Shell";
 
 const POLL_MS = 2500;
 const POLL_LIMIT = 24; // about a minute
@@ -27,60 +27,62 @@ function CopyTag({ tag }: { tag: string }) {
     }
   };
   return (
-    <div className="bk-tag">
-      <span className="bk-tag-label">Your group tag</span>
-      <span className="bk-tag-value">{tag}</span>
-      <button type="button" className="bk-tag-copy" onClick={copy}>
-        <Icon name={copied ? "check" : "copy"} size={16} /> {copied ? "Copied" : "Copy"}
-      </button>
-    </div>
+    <section className="bk-tag">
+      <span className="bk-kicker">Your group tag</span>
+      <div className="bk-tag-row">
+        <strong className="bk-tag-value">{tag}</strong>
+        <button type="button" className="bk-tag-copy" onClick={copy}>
+          <Icon name={copied ? "check" : "copy"} size={16} /> {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+      <p>Quote this on shoot day and in any message to us. Share it with your group so everyone has it.</p>
+    </section>
   );
 }
 
-function CelebrateMe({ booking }: { booking: Booking }) {
-  const isGroup = booking.packageSize > 1;
-  if (!booking.finzOptIn) {
-    return (
-      <section className="bk-cm bk-cm--soft">
-        <PartnerLockup size="sm" />
-        <h2>Want friends and family to chip in?</h2>
+/** Pops up over the confirmation for payers who ticked the Celebrate Me box. */
+function MelodyModal({ booking, onClose }: { booking: Booking; onClose: () => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    ref.current?.focus();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    document.body.classList.add("menu-open");
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.classList.remove("menu-open");
+    };
+  }, [onClose]);
+
+  return (
+    <div className="bk-modal" onClick={onClose}>
+      <div
+        ref={ref}
+        className="bk-modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="bk-modal-title"
+        tabIndex={-1}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button type="button" className="bk-modal-close" onClick={onClose} aria-label="Close">
+          <Icon name="close" size={20} />
+        </button>
+        <CelebrateMeMark />
+        <h2 id="bk-modal-title">Finish your gift page with Melody</h2>
         <p>
-          Create a free Celebrate Me gift page. Share it, and people can send wishes and gifts, and help pay your{" "}
+          Melody from FinZ is messaging you on WhatsApp now. Reply to finish your account and celebration page, then
+          share it so friends and family can chip in. Gifts go straight to Fash Shot It and come off your{" "}
           {formatNaira(booking.balance)} balance.
         </p>
-        <a className="bk-btn bk-btn--outline" href="https://celebrate.ink" target="_blank" rel="noreferrer">
-          Find out more
+        <a className="bk-btn bk-btn--primary bk-btn--block" href={booking.giftPageUrl ?? melodyWhatsapp} target="_blank" rel="noreferrer">
+          <Icon name="chat" size={18} /> Open chat with Melody
         </a>
-      </section>
-    );
-  }
-  return (
-    <section className="bk-cm">
-      <PartnerLockup />
-      <h2>Your free gift page is almost ready</h2>
-      <p>
-        Open Melody on WhatsApp to finish your Celebrate Me page. It takes about a minute. Share it, and friends and
-        family can send wishes and gifts towards your {formatNaira(booking.balance)} balance. Gifts go straight to Fash
-        Shot It under your group tag.
-      </p>
-      <a className="bk-btn bk-btn--whatsapp bk-btn--block" href={booking.giftPageUrl} target="_blank" rel="noreferrer">
-        <Icon name="gift" /> Create my gift page on WhatsApp
-      </a>
-      {isGroup && booking.podUrl && (
-        <div className="bk-cm-pod">
-          <h3>
-            <Icon name="users" /> Save the balance together
-          </h3>
-          <p>
-            Your group's savings pod is set up in the FinZ app, with {formatNaira(booking.balance)} as the goal and shoot
-            day as the end date. Start it and share the invite link with your group.
-          </p>
-          <a className="bk-btn bk-btn--outline bk-btn--block" href={booking.podUrl} target="_blank" rel="noreferrer">
-            Open the FinZ app
-          </a>
-        </div>
-      )}
-    </section>
+        <button type="button" className="bk-modal-later" onClick={onClose}>
+          Maybe later
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -90,6 +92,14 @@ export default function Confirmation() {
   // Paystack appends ?reference= (and ?trxref=) to the callback URL
   const reference = params.get("reference") ?? params.get("trxref") ?? "";
   const [state, setState] = useState<State>({ kind: "loading" });
+  const [showMelody, setShowMelody] = useState(false);
+  const closeMelody = useCallback(() => setShowMelody(false), []);
+
+  // Pop the Melody card up once, as soon as an opted-in booking is confirmed
+  const optedIn = state.kind === "confirmed" && state.booking.finzOptIn;
+  useEffect(() => {
+    if (optedIn) setShowMelody(true);
+  }, [optedIn]);
 
   useEffect(() => {
     if (!reference) {
@@ -130,10 +140,10 @@ export default function Confirmation() {
   return (
     <div className="bk">
       {isPreview() && <PreviewBanner />}
-      <BookingHeader subtitle="UNILAG Convocation" />
+      <BookingHeader />
       <main className="bk-wrap bk-confirm">
         {(state.kind === "loading" || state.kind === "pending") && (
-          <div className="bk-confirm-wait" aria-live="polite">
+          <div className="bk-state" aria-live="polite">
             <span className="bk-spinner" />
             <h1>Confirming your payment…</h1>
             <p>This usually takes a few seconds. Please don't pay again or close this page.</p>
@@ -141,7 +151,7 @@ export default function Confirmation() {
         )}
 
         {state.kind === "slow" && (
-          <div className="bk-confirm-wait">
+          <div className="bk-state">
             <span className="bk-confirm-icon bk-confirm-icon--wait">
               <Icon name="clock" size={30} />
             </span>
@@ -157,7 +167,7 @@ export default function Confirmation() {
         )}
 
         {state.kind === "error" && (
-          <div className="bk-confirm-wait">
+          <div className="bk-state">
             <h1>We couldn't find that booking</h1>
             <p>{state.message} If you've paid, message us on WhatsApp with your Paystack receipt.</p>
             <Link to={`${base}/unilag`} className="bk-btn bk-btn--outline">
@@ -170,56 +180,75 @@ export default function Confirmation() {
           <>
             <div className="bk-confirm-head">
               <span className="bk-confirm-icon">
-                <Icon name="check" size={32} />
+                <Icon name="check" size={36} />
               </span>
-              <h1>You're booked, {state.booking.name.split(" ")[0]}!</h1>
+              <h1>You're booked, {state.booking.name.split(" ")[0]}.</h1>
               <p>
-                Your deposit is paid and your slot is saved. We've emailed the details to{" "}
-                <strong>{state.booking.email}</strong>.
+                Your slot for UNILAG Convocation, {state.booking.shootPeriod}, is locked in. We've emailed your receipt
+                to <strong>{state.booking.email}</strong>.
               </p>
             </div>
 
-            <CopyTag tag={state.booking.reference} />
+            <div className="bk-confirm-grid">
+              <CopyTag tag={state.booking.reference} />
 
-            <dl className="bk-receipt">
-              <div>
-                <dt>Package</dt>
-                <dd>{peopleLabel(state.booking.packageSize)}</dd>
-              </div>
-              <div>
-                <dt>Total</dt>
-                <dd>{formatNaira(state.booking.total)}</dd>
-              </div>
-              <div>
-                <dt>Deposit paid</dt>
-                <dd>{formatNaira(state.booking.depositPaid)}</dd>
-              </div>
-              <div className="bk-receipt-strong">
-                <dt>Balance on shoot day</dt>
-                <dd>{formatNaira(state.booking.balance)}</dd>
-              </div>
-              <div>
-                <dt>Shoot</dt>
-                <dd>UNILAG convocation, {state.booking.shootPeriod}</dd>
-              </div>
-              {state.booking.members.length > 0 && (
-                <div>
-                  <dt>Group</dt>
-                  <dd>{[state.booking.name, ...state.booking.members].join(", ")}</dd>
-                </div>
-              )}
-            </dl>
+              <section className="bk-receipt">
+                <h2>Receipt</h2>
+                <dl>
+                  <div>
+                    <dt>Package</dt>
+                    <dd>{peopleLabel(state.booking.packageSize)}</dd>
+                  </div>
+                  <div>
+                    <dt>Total</dt>
+                    <dd>{formatNaira(state.booking.total)}</dd>
+                  </div>
+                  <div>
+                    <dt>Deposit paid</dt>
+                    <dd>{formatNaira(state.booking.depositPaid)}</dd>
+                  </div>
+                  {state.booking.members.length > 0 && (
+                    <div>
+                      <dt>Group</dt>
+                      <dd>{[state.booking.name, ...state.booking.members].join(", ")}</dd>
+                    </div>
+                  )}
+                  <div className="bk-receipt-strong">
+                    <dt>Balance on shoot day</dt>
+                    <dd>{formatNaira(state.booking.balance)}</dd>
+                  </div>
+                </dl>
+              </section>
 
-            <CelebrateMe booking={state.booking} />
+              <section className="bk-next">
+                <h2>What happens next</h2>
+                <ol>
+                  <li>
+                    <strong>Check your email</strong> for the receipt and your tag.
+                  </li>
+                  <li>
+                    <strong>We'll confirm the date on WhatsApp</strong> with the time and meeting point.
+                  </li>
+                  <li>
+                    <strong>Show up on shoot day</strong>, quote your tag and pay the {formatNaira(state.booking.balance)}{" "}
+                    balance.
+                  </li>
+                </ol>
+                {state.booking.finzOptIn && (
+                  <button type="button" className="bk-link-btn" onClick={() => setShowMelody(true)}>
+                    <Icon name="chat" size={18} /> Finish your gift page with Melody
+                  </button>
+                )}
+              </section>
+            </div>
 
-            <section className="bk-next">
-              <h2>What happens next</h2>
-              <ol>
-                <li>We'll message you on WhatsApp with the exact date, time and meeting point.</li>
-                <li>Bring your group tag on the day and pay the {formatNaira(state.booking.balance)} balance.</li>
-                <li>Need to change something? Message us with your tag at least 7 days before the shoot.</li>
-              </ol>
-            </section>
+            <div className="bk-confirm-back">
+              <Link to={base || "/"} className="bk-btn bk-btn--outline">
+                Back to bookings
+              </Link>
+            </div>
+
+            {showMelody && <MelodyModal booking={state.booking} onClose={closeMelody} />}
           </>
         )}
       </main>
