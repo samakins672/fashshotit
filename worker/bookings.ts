@@ -477,12 +477,54 @@ export async function handleBookings(request: Request, env: Env, url: URL): Prom
       return json({ ok: false, error: "Database not connected." }, 503);
     }
 
-    const row = await env.DB.prepare("SELECT * FROM bookings WHERE reference = ?")
+    let row = await env.DB.prepare("SELECT * FROM bookings WHERE reference = ?")
       .bind(reference)
       .first<BookingRow>();
 
     if (!row) {
       return json({ ok: false, error: "We couldn't find that booking." }, 404);
+    }
+
+    // Fallback: If status is still pending, verify directly with Paystack API.
+    // This allows localhost testing and avoids delays if the webhook hasn't arrived yet.
+    if (row.status === "pending" && env.PAYSTACK_SECRET_KEY) {
+      try {
+        const verifyRes = await fetch(
+          `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
+          {
+            headers: {
+              Authorization: `Bearer ${env.PAYSTACK_SECRET_KEY}`,
+            },
+          }
+        );
+        const verifyData = (await verifyRes.json().catch(() => ({}))) as {
+          status?: boolean;
+          data?: {
+            status?: string;
+            id?: number;
+          };
+        };
+
+        if (verifyData.status && verifyData.data?.status === "success") {
+          const paystackId = verifyData.data.id ? String(verifyData.data.id) : null;
+          await env.DB.prepare(
+            "UPDATE bookings SET status = 'confirmed', paid_at = datetime('now'), paystack_reference = ? WHERE reference = ?"
+          )
+            .bind(paystackId, reference)
+            .run();
+
+          const updatedRow = await env.DB.prepare("SELECT * FROM bookings WHERE reference = ?")
+            .bind(reference)
+            .first<BookingRow>();
+
+          if (updatedRow) {
+            row = updatedRow;
+            await sendConfirmationEmails(updatedRow, env);
+          }
+        }
+      } catch (err) {
+        console.error("Paystack direct verification fallback error:", err);
+      }
     }
 
     let members: string[] = [];
