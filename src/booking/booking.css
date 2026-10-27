@@ -1604,35 +1604,26 @@ body.bk-body {
   font-weight: 800;
 }
 
-/* Wrapp by FinZ */
+/* Wrapp Logo */
 .bk-cm-mark {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: 800;
 }
 
-.bk-cm-mark img {
-  width: 26px;
-  height: 26px;
-  border-radius: 7px;
+.bk-cm-mark img,
+.bk-wrapp-logo {
+  height: 28px;
+  width: auto;
+  max-width: 130px;
+  object-fit: contain;
+  display: block;
 }
 
-.bk-cm-mark small {
-  font-size: inherit;
-  font-weight: 500;
-  color: var(--bk-muted);
-}
-
-.bk-cm-mark--sm {
-  font-size: 14px;
-}
-
-.bk-cm-mark--sm img {
-  width: 20px;
-  height: 20px;
-  border-radius: 5px;
+.bk-cm-mark--sm img,
+.bk-cm-mark--sm .bk-wrapp-logo {
+  height: 22px;
+  width: auto;
+  max-width: 100px;
 }
 
 /* Summary: last on phones, a sticky dark card beside the form on desktop */
@@ -2034,11 +2025,11 @@ body.bk-body {
   gap: 8px;
 }
 
-/* Floating Wrapp widget docked at bottom-left */
+/* Floating Wrapp widget docked at bottom-right */
 .bk-floating-wrapp {
   position: fixed;
   bottom: 24px;
-  left: 24px;
+  right: 24px;
   width: 320px;
   max-width: calc(100vw - 32px);
   z-index: 999;

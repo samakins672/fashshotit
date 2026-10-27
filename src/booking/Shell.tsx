@@ -151,14 +151,11 @@ export function SettingsGate({ error }: { error: string }) {
   );
 }
 
-/** "Wrapp by FinZ": uses the Wrapp logo from email-logo.png */
+/** Wrapp by FinZ: uses the landscape logo which already includes the Wrapp branding */
 export function WrappMark({ size = "md" }: { size?: "sm" | "md" }) {
   return (
     <span className={`bk-cm-mark bk-cm-mark--${size}`}>
-      <img src="/images/partners/wrapp.png" alt="Wrapp" />
-      <span>
-        Wrapp <small>by FinZ</small>
-      </span>
+      <img src="/images/partners/wrapp.png" alt="Wrapp" className="bk-wrapp-logo" />
     </span>
   );
 }

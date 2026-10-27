@@ -99,7 +99,7 @@ function downloadReceiptHtml(booking: Booking) {
   }
 }
 
-/** Floating Wrapp celebration component docked at bottom-left */
+/** Floating Wrapp celebration component docked at bottom-right */
 function FloatingWrappKit({
   giftUrl,
   balance,
@@ -370,7 +370,7 @@ export default function Confirmation() {
               </div>
             </div>
 
-            {/* Floating Wrapp Component docked at bottom-left */}
+            {/* Floating Wrapp Component docked at bottom-right */}
             <FloatingWrappKit
               giftUrl={giftUrl}
               balance={state.booking.balance}
