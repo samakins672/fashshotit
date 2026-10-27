@@ -2080,11 +2080,11 @@ body.bk-body {
   width: 360px;
   max-width: calc(100vw - 32px);
   padding: 14px 14px 14px 20px;
-  border: 1px solid #e2dfd8;
+  border: 1px solid #2e2a35;
   border-radius: 22px;
-  background: #ffffff;
-  color: #17121f;
-  box-shadow: 0 14px 40px rgba(23, 18, 31, 0.16);
+  background: #0f0d13;
+  color: #f2f3ea;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.4);
   animation: bk-rise 0.4s ease;
 }
 
@@ -2097,7 +2097,6 @@ body.bk-body {
 }
 
 .bk-floating-text .bk-wordmark {
-  color: #17121f;
   font-size: 24px;
   margin-bottom: 4px;
 }
@@ -2106,7 +2105,7 @@ body.bk-body {
   font-size: 15.5px;
   line-height: 1.25;
   font-weight: 800;
-  color: #17121f;
+  color: #f2f3ea;
 }
 
 .bk-floating-go {
@@ -2138,10 +2137,10 @@ body.bk-body {
   place-items: center;
   width: 28px;
   height: 28px;
-  border: 1px solid #e2dfd8;
+  border: 1px solid #2e2a35;
   border-radius: 999px;
-  background: #ffffff;
-  color: #17121f;
+  background: #1c1922;
+  color: #f2f3ea;
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
