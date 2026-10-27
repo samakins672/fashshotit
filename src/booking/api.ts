@@ -20,6 +20,7 @@ export interface CheckoutRequest {
   ambassadorCode: string;
   consent: boolean;
   marketingOptIn: boolean;
+  finzOptIn: boolean;
 }
 
 export interface Booking {
@@ -38,6 +39,8 @@ export interface Booking {
   depositPaid: number;
   balance: number;
   shootPeriod: string;
+  /** Whether student opted to auto-create Wrapp gift page */
+  finzOptIn?: boolean;
   /** Link to the student's Wrapp celebration kit */
   giftPageUrl?: string;
 }
@@ -116,6 +119,7 @@ export async function startCheckout(
     depositPaid: pkg.deposit,
     balance: pkg.total - pkg.deposit,
     shootPeriod: settings.shootPeriod,
+    finzOptIn: req.finzOptIn,
     giftPageUrl: buildWrappKitUrl(pkg.total - pkg.deposit),
   };
   try {

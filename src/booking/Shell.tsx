@@ -151,11 +151,11 @@ export function SettingsGate({ error }: { error: string }) {
   );
 }
 
-/** "Wrapp by FinZ": FinZ's own logo, since Wrapp is a FinZ product. */
+/** "Wrapp by FinZ": uses the Wrapp logo from email-logo.png */
 export function WrappMark({ size = "md" }: { size?: "sm" | "md" }) {
   return (
     <span className={`bk-cm-mark bk-cm-mark--${size}`}>
-      <img src="/images/partners/finz.png" alt="" />
+      <img src="/images/partners/wrapp.png" alt="Wrapp" />
       <span>
         Wrapp <small>by FinZ</small>
       </span>
@@ -247,6 +247,7 @@ const paths = {
   close: "M6 6l12 12M18 6L6 18",
   plus: "M12 5v14M5 12h14",
   clock: "M12 21a9 9 0 100-18 9 9 0 000 18zM12 7v5l3 2",
+  download: "M12 3v12m0 0l-4-4m4 4l4-4M5 20h14",
 } as const;
 
 export function Icon({ name, size = 20 }: { name: keyof typeof paths; size?: number }) {

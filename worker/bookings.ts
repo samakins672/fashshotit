@@ -370,6 +370,7 @@ export async function handleBookings(request: Request, env: Env, url: URL): Prom
     const ambassadorCode = typeof data.ambassadorCode === "string" ? data.ambassadorCode.trim().toUpperCase() : "";
     const consent = Boolean(data.consent);
     const marketingOptIn = Boolean(data.marketingOptIn);
+    const finzOptIn = Boolean(data.finzOptIn);
 
     if (!packageSize || packageSize < 1 || packageSize > 6) {
       return json({ ok: false, error: "Please select a valid package (1-6 people)." }, 422);
@@ -442,7 +443,7 @@ export async function handleBookings(request: Request, env: Env, url: URL): Prom
             depositPaid,
             balance,
             marketingOptIn ? 1 : 0,
-            0,
+            finzOptIn ? 1 : 0,
             SHOOT_PERIOD
           )
           .run();
@@ -646,6 +647,7 @@ export async function handleBookings(request: Request, env: Env, url: URL): Prom
       depositPaid: row.deposit_paid,
       balance: row.balance,
       shootPeriod: row.shoot_period,
+      finzOptIn: Boolean(row.finz_opt_in),
       giftPageUrl,
     });
   }
