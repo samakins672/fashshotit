@@ -4,6 +4,7 @@ import { useBasePath } from "./BookingApp";
 import { getBooking, isPreview, type Booking } from "./api";
 import { buildWrappKitUrl, formatNaira, peopleLabel } from "./data";
 import { contact } from "../data/site";
+import { popConfetti } from "./confetti";
 import { BookingFooter, BookingHeader, Icon, PreviewBanner, WrappMark } from "./Shell";
 
 const POLL_MS = 2500;
@@ -99,7 +100,7 @@ function downloadReceiptHtml(booking: Booking) {
   }
 }
 
-/** Floating Wrapp celebration component docked at bottom-right */
+/** A short Wrapp nudge, docked bottom-right: one line and one button. */
 function FloatingWrappKit({
   giftUrl,
   balance,
@@ -112,37 +113,51 @@ function FloatingWrappKit({
   if (dismissed) return null;
 
   return (
-    <aside className="bk-floating-wrapp" aria-label="Wrapp Celebration Page">
-      <div className="bk-floating-wrapp-header">
+    <aside className="bk-floating-wrapp bk-wd" aria-label="Wrapp gift page">
+      <span className="bk-floating-gift" aria-hidden="true">
+        <Icon name="gift" size={26} />
+      </span>
+      <span className="bk-floating-text">
         <WrappMark size="sm" />
-        <button
-          type="button"
-          className="bk-floating-close"
-          onClick={() => setDismissed(true)}
-          aria-label="Close"
-        >
+        <strong>Cover {formatNaira(balance)} with gifts</strong>
+      </span>
+      <a href={giftUrl} target="_blank" rel="noreferrer" className="bk-floating-go">
+        Start
+      </a>
+      <button type="button" className="bk-floating-close" onClick={() => setDismissed(true)} aria-label="Close">
+        &times;
+      </button>
+    </aside>
+  );
+}
+
+/** The post-payment prompt. Pops confetti from both sides when it opens. */
+function WrappModal({ giftUrl, balance, onClose }: { giftUrl: string; balance: number; onClose: () => void }) {
+  useEffect(() => popConfetti(), []);
+  return (
+    <div className="bk-modal-backdrop bk-wd" role="dialog" aria-modal="true" aria-labelledby="bk-wrapp-modal-title">
+      <div className="bk-modal">
+        <button type="button" className="bk-modal-close" onClick={onClose} aria-label="Close">
           &times;
         </button>
-      </div>
-
-      <div className="bk-floating-body">
-        <h4>Cover your balance with gifts</h4>
-        <p>
-          Let friends & family gift towards your <strong>{formatNaira(balance)}</strong> balance directly on Wrapp.
+        <span className="bk-modal-gift" aria-hidden="true">
+          <Icon name="gift" size={44} />
+        </span>
+        <WrappMark size="sm" />
+        <h3 id="bk-wrapp-modal-title">Let friends cover your balance</h3>
+        <p className="bk-modal-amount">
+          <strong>{formatNaira(balance)}</strong> is due on shoot day. Make a free Wrapp page and gifts go straight to you.
         </p>
-
-        <div className="bk-floating-actions">
-          <a
-            href={giftUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="bk-btn bk-btn--accent bk-btn--sm"
-          >
-            Create gift page &rarr;
+        <div className="bk-modal-actions">
+          <a href={giftUrl} target="_blank" rel="noreferrer" className="bk-modal-primary" onClick={onClose}>
+            Create my gift page
           </a>
+          <button type="button" className="bk-modal-skip" onClick={onClose}>
+            Not now
+          </button>
         </div>
       </div>
-    </aside>
+    </div>
   );
 }
 
@@ -335,55 +350,8 @@ export default function Confirmation() {
               balance={state.booking.balance}
             />
 
-            {/* Post-Payment Wrapp Celebration Page Prompt Modal */}
             {showWrappModal && (
-              <div className="bk-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="bk-wrapp-modal-title">
-                <div className="bk-modal">
-                  <div className="bk-modal-header">
-                    <WrappMark size="sm" />
-                    <button
-                      type="button"
-                      className="bk-modal-close"
-                      onClick={() => setShowWrappModal(false)}
-                      aria-label="Close"
-                    >
-                      &times;
-                    </button>
-                  </div>
-
-                  <div className="bk-modal-body">
-                    <h3 id="bk-wrapp-modal-title">Cover your shoot balance with gifts</h3>
-                    <p>
-                      Your convocation shoot is locked in! You paid a 50% deposit of{" "}
-                      <strong>{formatNaira(state.booking.depositPaid)}</strong>. Your remaining balance is{" "}
-                      <strong>{formatNaira(state.booking.balance)}</strong> on shoot day.
-                    </p>
-                    <div className="bk-modal-callout">
-                      Would you like to auto-create a free <strong>Wrapp celebration page</strong>?
-                      Friends and family can send you gifts directly to your own account to help cover your balance.
-                    </div>
-                  </div>
-
-                  <div className="bk-modal-actions">
-                    <a
-                      href={giftUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="bk-btn bk-btn--accent bk-btn--block"
-                      onClick={() => setShowWrappModal(false)}
-                    >
-                      Yes, create my gift page &rarr;
-                    </a>
-                    <button
-                      type="button"
-                      className="bk-btn bk-btn--ghost bk-btn--block"
-                      onClick={() => setShowWrappModal(false)}
-                    >
-                      No thanks, view my receipt
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <WrappModal giftUrl={giftUrl} balance={state.booking.balance} onClose={() => setShowWrappModal(false)} />
             )}
           </>
         )}

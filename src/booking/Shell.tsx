@@ -245,6 +245,7 @@ const paths = {
   plus: "M12 5v14M5 12h14",
   clock: "M12 21a9 9 0 100-18 9 9 0 000 18zM12 7v5l3 2",
   download: "M12 3v12m0 0l-4-4m4 4l4-4M5 20h14",
+  gift: "M4 11h16v9H4zM3 7h18v4H3zM12 7v13M12 7C9 7 7.5 5 9 4s3 1 3 3zM12 7c3 0 4.5-2 3-3s-3 1-3 3z",
 } as const;
 
 export function Icon({ name, size = 20 }: { name: keyof typeof paths; size?: number }) {
