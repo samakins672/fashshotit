@@ -221,7 +221,7 @@ export default function BookingForm({
           </fieldset>
         )}
 
-        <div className="bk-grid-2">
+        {/* <div className="bk-grid-2">
           <Field label="Ambassador code (optional)" hint="If a Fash ambassador referred you. It doesn't change the price.">
             <input
               name="ambassadorCode"
@@ -232,7 +232,7 @@ export default function BookingForm({
               onChange={(e) => set("ambassadorCode", e.target.value.toUpperCase())}
             />
           </Field>
-        </div>
+        </div> */}
 
         <fieldset className="bk-fieldset">
           <legend>{isGroup ? 4 : 3} · Consent</legend>

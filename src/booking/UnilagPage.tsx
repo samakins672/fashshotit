@@ -60,10 +60,10 @@ export const faqs = (s: BookingSettings) => [
     q: "Can I cancel after I pay?",
     a: "Once the shoot is confirmed your deposit isn't refundable, but you can pass your booking to another student by messaging us with your group tag at least 7 days before the shoot. If Fash Shot It cancels or reschedules, you get a full refund or can move to the new date.",
   },
-  {
-    q: "What is an ambassador code?",
-    a: "If a Fash ambassador told you about the shoot, enter their code so they get credit. It doesn't change your price.",
-  },
+  // {
+  //   q: "What is an ambassador code?",
+  //   a: "If a Fash ambassador told you about the shoot, enter their code so they get credit. It doesn't change your price.",
+  // },
 ];
 
 /** True while the element is on screen (used to hide the sticky bar over the closing call to action). */
