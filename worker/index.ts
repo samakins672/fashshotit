@@ -1,3 +1,5 @@
+import { handleBookings } from "./bookings";
+
 interface ContactPayload {
   name?: unknown;
   email?: unknown;
@@ -84,6 +86,10 @@ export default {
         return json({ ok: false, error: "Method not allowed." }, 405);
       }
       return handleContact(request, env);
+    }
+
+    if (url.pathname.startsWith("/api/bookings/unilag")) {
+      return handleBookings(request, env, url);
     }
 
     return json({ ok: false, error: "Not found." }, 404);
