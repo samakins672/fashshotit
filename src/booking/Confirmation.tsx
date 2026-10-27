@@ -103,26 +103,11 @@ function downloadReceiptHtml(booking: Booking) {
 function FloatingWrappKit({
   giftUrl,
   balance,
-  autoCountdown,
 }: {
   giftUrl: string;
   balance: number;
-  autoCountdown?: boolean;
 }) {
-  const [countdown, setCountdown] = useState<number | null>(autoCountdown ? 10 : null);
   const [dismissed, setDismissed] = useState(false);
-
-  useEffect(() => {
-    if (countdown === null || countdown <= 0) return;
-    const timer = setTimeout(() => {
-      if (countdown === 1) {
-        window.location.assign(giftUrl);
-      } else {
-        setCountdown((c) => (c ? c - 1 : null));
-      }
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [countdown, giftUrl]);
 
   if (dismissed) return null;
 
@@ -133,10 +118,7 @@ function FloatingWrappKit({
         <button
           type="button"
           className="bk-floating-close"
-          onClick={() => {
-            setCountdown(null);
-            setDismissed(true);
-          }}
+          onClick={() => setDismissed(true)}
           aria-label="Close"
         >
           &times;
@@ -149,40 +131,16 @@ function FloatingWrappKit({
           Let friends & family gift towards your <strong>{formatNaira(balance)}</strong> balance directly on Wrapp.
         </p>
 
-        {countdown !== null && countdown > 0 ? (
-          <div className="bk-floating-countdown-box">
-            <span className="bk-countdown-pill">
-              Redirecting in <strong>{countdown}s</strong>
-            </span>
-            <div className="bk-floating-actions">
-              <a
-                href={giftUrl}
-                className="bk-btn bk-btn--accent bk-btn--sm"
-                onClick={() => setCountdown(null)}
-              >
-                Go to Wrapp now
-              </a>
-              <button
-                type="button"
-                className="bk-btn bk-btn--ghost bk-btn--sm"
-                onClick={() => setCountdown(null)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="bk-floating-actions">
-            <a
-              href={giftUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="bk-btn bk-btn--accent bk-btn--sm"
-            >
-              Create gift page &rarr;
-            </a>
-          </div>
-        )}
+        <div className="bk-floating-actions">
+          <a
+            href={giftUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="bk-btn bk-btn--accent bk-btn--sm"
+          >
+            Create gift page &rarr;
+          </a>
+        </div>
       </div>
     </aside>
   );
@@ -375,7 +333,6 @@ export default function Confirmation() {
             <FloatingWrappKit
               giftUrl={giftUrl}
               balance={state.booking.balance}
-              autoCountdown={Boolean(state.booking.finzOptIn)}
             />
 
             {/* Post-Payment Wrapp Celebration Page Prompt Modal */}
