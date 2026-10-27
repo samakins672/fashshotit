@@ -9,7 +9,7 @@ export default function SectionHeading({ title }: { title: string }) {
         </Reveal>
       </h2>
       <Reveal as="span">
-        <img src="/images/divider.png" alt="" width={76} height={9} />
+        <img src="/images/divider.webp" alt="" width={76} height={9} />
       </Reveal>
     </div>
   );

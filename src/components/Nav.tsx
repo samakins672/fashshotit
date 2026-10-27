@@ -45,7 +45,7 @@ export default function Nav() {
             ))}
           </ul>
           <Link to="/" className="site-logo" aria-label="Fash Shot It — home">
-            <img src="/images/logo.png" alt="Fash Shot It" width={90} height={90} />
+            <img src="/images/logo.webp" alt="Fash Shot It" width={90} height={90} />
           </Link>
           <ul className="nav-list nav-list-right">
             {right.map((l) => (

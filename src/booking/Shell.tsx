@@ -46,7 +46,7 @@ export function BookingHeader() {
             ))}
           </ul>
           <a href={`${site}/`} className="bk-nav-logo" aria-label="Fash Shot It home">
-            <img src="/images/logo-tr.png" alt="Fash Shot It" width="60" height="60" />
+            <img src="/images/logo-tr.webp" alt="Fash Shot It" width="60" height="60" />
           </a>
           <ul className="bk-nav-list">
             {right.map((l) => (
@@ -155,7 +155,7 @@ export function SettingsGate({ error }: { error: string }) {
 export function WrappMark({ size = "md" }: { size?: "sm" | "md" }) {
   return (
     <span className={`bk-cm-mark bk-cm-mark--${size}`}>
-      <img src="/images/partners/wrapp.png" alt="Wrapp" className="bk-wrapp-logo" />
+      <img src="/images/partners/wrapp.webp" alt="Wrapp" className="bk-wrapp-logo" />
     </span>
   );
 }
@@ -199,7 +199,7 @@ export function BookingFooter() {
     <footer className="bk-footer">
       <div className="bk-wrap bk-footer-inner">
         <div>
-          <img src="/images/logo-tr.png" alt="Fash Shot It" width="64" height="64" className="bk-footer-logo" />
+          <img src="/images/logo-tr.webp" alt="Fash Shot It" width="64" height="64" className="bk-footer-logo" />
           <p>Photography, video and drone coverage in Lagos.</p>
         </div>
         <div>

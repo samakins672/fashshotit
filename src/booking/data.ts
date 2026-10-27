@@ -46,19 +46,19 @@ export const services = [
   {
     title: "Studio session",
     text: "Portraits, family and group shoots, styled on location or in studio.",
-    image: "/images/media/portraits/FSI_1764.jpg",
+    image: "/images/media/portraits/FSI_1764.webp",
     price: formatNaira(100_000),
   },
   {
     title: "Video coverage",
     text: "Cinematic coverage of your day, edited into a film you'll want to rewatch.",
-    image: "/images/media/events/FSI (643 of 682).JPG",
+    image: "/images/media/events/FSI (643 of 682).webp",
     price: formatNaira(200_000),
   },
   {
     title: "Drone shoot",
     text: "Licensed aerial photos and video that show the whole scale of your event.",
-    image: "/images/media/commercials/DJI_0704.jpg",
+    image: "/images/media/commercials/DJI_0704.webp",
     price: formatNaira(200_000),
   },
 ];
@@ -69,22 +69,22 @@ export const included = [
   {
     title: "Convocation-day photos",
     text: "Your graduation moments on campus, edited and delivered in high resolution.",
-    image: "/images/media/portraits/FSI_1222 (2).jpg",
+    image: "/images/media/portraits/FSI_1222 (2).webp",
   },
   {
     title: "Professional headshots",
     text: "A clean, polished headshot for LinkedIn, your CV and everything after school.",
-    image: "/images/media/portraits/FSI_7683new.jpg",
+    image: "/images/media/portraits/FSI_7683new.webp",
   },
   {
     title: "Gown rental",
     text: "Your convocation gown is ready on the day, so there's nothing to borrow or return late.",
-    image: "/images/media/portraits/FSI_8263.jpg",
+    image: "/images/media/portraits/FSI_8263.webp",
   },
   {
     title: "Props & backdrops",
     text: "Styled backdrops, balloons and props for photos that look like a celebration.",
-    image: "/images/media/portraits/FSI_4438-2.jpg",
+    image: "/images/media/portraits/FSI_4438-2.webp",
   },
 ];
 
@@ -119,8 +119,8 @@ export function buildWrappKitUrl(balance: number, date?: string, baseUrl: string
 
 /** Logos for the partners strip on the UNILAG page. Entries without a logo show as a placeholder tile. */
 export const partners: { name: string; logo?: string; hideName?: boolean }[] = [
-  { name: "Wrapp", logo: "/images/partners/wrapp.png", hideName: true },
-  { name: "FinZ", logo: "/images/partners/finz.png" },
+  { name: "Wrapp", logo: "/images/partners/wrapp.webp", hideName: true },
+  { name: "FinZ", logo: "/images/partners/finz.webp" },
   { name: "Partner" },
   { name: "Partner" },
 ];

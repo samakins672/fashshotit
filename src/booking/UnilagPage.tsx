@@ -137,7 +137,7 @@ export default function UnilagPage() {
       <BookingHeader />
 
       <PhotoHero
-        image="/images/media/portraits/FSI_7628.jpg"
+        image="/images/media/portraits/FSI_7628.webp"
         imagePosition="center 22%"
         eyebrow={`${settings.shootPeriod} · UNILAG`}
         title="Your convocation, shot beautifully."

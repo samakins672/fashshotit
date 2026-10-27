@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="container footer-inner">
         <Link to="/" className="footer-logo">
-          <img src="/images/logo-tr.png" alt="Fash Shot It" width={80} />
+          <img src="/images/logo-tr.webp" alt="Fash Shot It" width={80} />
         </Link>
         <ul className="footer-social">
           {socials.map((s) => (

@@ -23,7 +23,7 @@ export default function BookingsHome() {
       <BookingHeader />
 
       <PhotoHero
-        image="/images/media/events/FSI (76 of 682).JPG"
+        image="/images/media/events/FSI (76 of 682).webp"
         eyebrow="Book Fash Shot It"
         title="Moments worth keeping, shot right."
       >
@@ -49,7 +49,7 @@ export default function BookingsHome() {
           </div>
           <Link to={`${base}/unilag`} className="bk-event">
             <div className="bk-event-media">
-              <img src="/images/media/portraits/FSI_7628.jpg" alt="Graduates in convocation gowns" />
+              <img src="/images/media/portraits/FSI_7628.webp" alt="Graduates in convocation gowns" />
               <span className="bk-pill">{unilag.shootPeriod}</span>
             </div>
             <div className="bk-event-body">

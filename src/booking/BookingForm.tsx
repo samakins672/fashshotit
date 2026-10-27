@@ -261,7 +261,7 @@ export default function BookingForm({
       </div>
 
       <aside className="bk-summary" aria-live="polite">
-        <img src="/images/media/portraits/FSI_7628.jpg" alt="" className="bk-summary-img" />
+        <img src="/images/media/portraits/FSI_7628.webp" alt="" className="bk-summary-img" />
         <div className="bk-summary-title">
           <span className="bk-kicker">UNILAG Convocation</span>
           <strong>{pkg.size === 1 ? "Solo package" : `${pkg.size}-person package`}</strong>
