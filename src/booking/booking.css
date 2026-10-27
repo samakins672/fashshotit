@@ -1154,21 +1154,23 @@ body.bk-body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
   width: 150px;
   height: 72px;
   margin-right: 12px;
+  padding: 0 16px;
   border: 1px solid var(--bk-line);
   border-radius: 16px;
   background: var(--bk-surface);
-  font-size: 18px;
-  font-weight: 900;
+  box-sizing: border-box;
 }
 
 .bk-marquee-track li img {
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
+  max-width: 110px;
+  max-height: 40px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
 }
 
 .bk-marquee-track li.is-empty {

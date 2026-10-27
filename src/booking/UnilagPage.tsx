@@ -97,10 +97,7 @@ function PartnersStrip() {
             {row.map((p, i) => (
               <li key={i} aria-hidden={i >= partners.length} className={p.logo ? "" : "is-empty"}>
                 {p.logo ? (
-                  <>
-                    <img src={p.logo} alt="" />
-                    <span>{p.name}</span>
-                  </>
+                  <img src={p.logo} alt={p.name} />
                 ) : (
                   "Partner logo"
                 )}
