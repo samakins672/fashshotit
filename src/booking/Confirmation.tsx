@@ -114,9 +114,6 @@ function FloatingWrappKit({
 
   return (
     <aside className="bk-floating-wrapp bk-wd" aria-label="Wrapp gift page">
-      <span className="bk-floating-gift" aria-hidden="true">
-        <Icon name="gift" size={26} />
-      </span>
       <span className="bk-floating-text">
         <WrappWordmark />
         <strong>Cover {formatNaira(balance)} with gifts</strong>

@@ -2079,24 +2079,13 @@ body.bk-body {
   gap: 14px;
   width: 360px;
   max-width: calc(100vw - 32px);
-  padding: 14px 14px 14px 16px;
+  padding: 14px 14px 14px 20px;
   border: 1px solid #2e2a35;
   border-radius: 22px;
   background: #0f0d13;
   color: #f2f3ea;
   box-shadow: 0 16px 44px rgba(0, 0, 0, 0.4);
   animation: bk-rise 0.4s ease;
-}
-
-.bk-floating-gift {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 16px;
-  background: #b5f21a;
-  color: #17121f;
 }
 
 .bk-floating-text {
