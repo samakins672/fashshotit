@@ -47,7 +47,17 @@ const PACKAGES: BookingPackage[] = [
 const SLOT_TARGET = 50;
 const REFUND_DEADLINE = "2027-01-15";
 const SHOOT_PERIOD = "March 2027";
-const DEFAULT_MELODY_WHATSAPP = "https://wa.me/MELODY";
+const DEFAULT_WRAPP_KIT_URL = "https://wrapp.africa/kit/unilag";
+
+function buildWrappKitUrl(baseUrl: string | undefined, balance: number, date?: string): string {
+  const base = baseUrl || DEFAULT_WRAPP_KIT_URL;
+  const sep = base.includes("?") ? "&" : "?";
+  let url = `${base}${sep}amount=${balance}`;
+  if (date) {
+    url += `&date=${encodeURIComponent(date)}`;
+  }
+  return url;
+}
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -142,6 +152,16 @@ async function sendConfirmationEmails(booking: BookingRow, env: Env) {
 
       ${membersHtml}
 
+      <div style="background-color: #f7f5f0; border-radius: 8px; padding: 20px; margin: 24px 0; border: 1px solid #e2ded4;">
+        <h3 style="margin: 0 0 8px; color: #111;">Let friends and family cover your balance.</h3>
+        <p style="margin: 0 0 16px; font-size: 14px; line-height: 1.5; color: #444;">
+          Make a free Wrapp page for your convocation. Friends and family can send you gifts, and the money goes to your own Wrapp account, not to Fash Shot It. You pay your balance on shoot day as usual.
+        </p>
+        <a href="${escapeHtml(buildWrappKitUrl(env.WRAPP_KIT_URL, booking.balance))}" target="_blank" rel="noreferrer" style="display: inline-block; background-color: #111; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 14px;">
+          Create your gift page
+        </a>
+      </div>
+
       <h3>What happens next?</h3>
       <ol style="line-height: 1.6; color: #333;">
         <li>Keep your group tag safe. Share it with anyone in your group.</li>
@@ -192,7 +212,6 @@ async function sendConfirmationEmails(booking: BookingRow, env: Env) {
         <p><strong>Package Size:</strong> ${booking.package_size}</p>
         <p><strong>Deposit Paid:</strong> ${formatNaira(booking.deposit_paid)}</p>
         <p><strong>Balance:</strong> ${formatNaira(booking.balance)}</p>
-        <p><strong>Celebrate Me (FinZ):</strong> ${booking.finz_opt_in ? "Yes" : "No"}</p>
         <p><strong>Ambassador Code:</strong> ${escapeHtml(booking.ambassador_code || "None")}</p>
       `,
     }),
@@ -255,7 +274,6 @@ export async function handleBookings(request: Request, env: Env, url: URL): Prom
     const ambassadorCode = typeof data.ambassadorCode === "string" ? data.ambassadorCode.trim().toUpperCase() : "";
     const consent = Boolean(data.consent);
     const marketingOptIn = Boolean(data.marketingOptIn);
-    const finzOptIn = Boolean(data.finzOptIn);
 
     if (!packageSize || packageSize < 1 || packageSize > 6) {
       return json({ ok: false, error: "Please select a valid package (1-6 people)." }, 422);
@@ -328,7 +346,7 @@ export async function handleBookings(request: Request, env: Env, url: URL): Prom
             depositPaid,
             balance,
             marketingOptIn ? 1 : 0,
-            finzOptIn ? 1 : 0,
+            0,
             SHOOT_PERIOD
           )
           .run();
@@ -474,7 +492,7 @@ export async function handleBookings(request: Request, env: Env, url: URL): Prom
       members = [];
     }
 
-    const melodyUrl = env.MELODY_WHATSAPP || DEFAULT_MELODY_WHATSAPP;
+    const giftPageUrl = buildWrappKitUrl(env.WRAPP_KIT_URL, row.balance);
 
     return json({
       reference: row.reference,
@@ -487,8 +505,7 @@ export async function handleBookings(request: Request, env: Env, url: URL): Prom
       depositPaid: row.deposit_paid,
       balance: row.balance,
       shootPeriod: row.shoot_period,
-      finzOptIn: Boolean(row.finz_opt_in),
-      giftPageUrl: row.finz_opt_in ? melodyUrl : undefined,
+      giftPageUrl,
     });
   }
 

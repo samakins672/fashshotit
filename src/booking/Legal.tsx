@@ -19,7 +19,7 @@ const privacy: Section[] = [
   },
   {
     title: "Who we share it with",
-    text: "Paystack, to process your payment. FinZ Africa, only if you tick the Celebrate Me box, so Melody can set up your gift page. We never sell your data.",
+    text: "Paystack, to process your payment. We never sell your data.",
   },
   {
     title: "Marketing",
@@ -46,7 +46,7 @@ const terms: Section[] = [
   },
   {
     title: "Balance",
-    text: "The remaining 50% is paid on shoot day. Gifts from your Celebrate Me page are paid straight to Fash Shot It and come off your balance.",
+    text: "The remaining 50% is paid on shoot day. Gifts sent through Wrapp go to the student's own Wrapp account, not to Fash Shot It. The balance is paid to Fash Shot It on shoot day.",
   },
   {
     title: "Minimum numbers",

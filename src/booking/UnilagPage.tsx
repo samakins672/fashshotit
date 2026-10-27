@@ -53,8 +53,8 @@ export const faqs = (s: BookingSettings) => [
     a: "One person pays the deposit for the whole group and gets one group tag. Everyone in the group is shot together, and the balance is paid as a group on the day.",
   },
   {
-    q: "Can friends and family help pay my balance?",
-    a: "Yes. Tick the Celebrate Me box at checkout and Melody from FinZ will message you on WhatsApp to set up a free gift page. Gifts are paid straight to Fash Shot It and come off your balance.",
+    q: "Can friends or family help pay?",
+    a: "Yes. After booking you can create a free Wrapp gift page. Friends and family send gifts to you, to your own Wrapp account. Fash Shot It doesn't receive or hold them. You pay your balance on shoot day as normal.",
   },
   {
     q: "Can I cancel after I pay?",

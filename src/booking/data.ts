@@ -100,11 +100,16 @@ export const formatDate = (iso: string) =>
 
 export const peopleLabel = (n: number) => (n === 1 ? "1 person" : `${n} people`);
 
-/**
- * Melody is FinZ's WhatsApp assistant. Payers who tick the Celebrate Me box finish their gift page with her.
- * TODO: swap in Melody's real number once FinZ shares it.
- */
-export const melodyWhatsapp = "https://wa.me/MELODY";
+export const DEFAULT_WRAPP_KIT_URL = "https://wrapp.africa/kit/unilag";
+
+export function buildWrappKitUrl(balance: number, date?: string, baseUrl: string = DEFAULT_WRAPP_KIT_URL): string {
+  const sep = baseUrl.includes("?") ? "&" : "?";
+  let url = `${baseUrl}${sep}amount=${balance}`;
+  if (date) {
+    url += `&date=${encodeURIComponent(date)}`;
+  }
+  return url;
+}
 
 /** Logos for the partners strip on the UNILAG page. Entries without a logo show as a placeholder tile. */
 export const partners: { name: string; logo?: string }[] = [

@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { useBasePath } from "./BookingApp";
 import { joinWaitlist, startCheckout, type CheckoutRequest } from "./api";
 import { formatDate, formatNaira, peopleLabel, type BookingSettings } from "./data";
-import { CelebrateMeMark, Icon } from "./Shell";
+import { Icon } from "./Shell";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -86,7 +86,6 @@ export default function BookingForm({
     ambassadorCode: new URLSearchParams(window.location.search).get("ref")?.toUpperCase() ?? "",
     consent: false,
     marketingOptIn: false,
-    finzOptIn: false,
   });
   const [members, setMembers] = useState<string[]>([]);
   const [errors, setErrors] = useState<Errors>({});
@@ -256,16 +255,6 @@ export default function BookingForm({
           <label className="bk-check">
             <input type="checkbox" checked={form.marketingOptIn} onChange={(e) => set("marketingOptIn", e.target.checked)} />
             <span>Send me offers and updates from Fash Shot It.</span>
-          </label>
-
-          <label className={`bk-check bk-check--finz${form.finzOptIn ? " is-on" : ""}`}>
-            <input type="checkbox" checked={form.finzOptIn} onChange={(e) => set("finzOptIn", e.target.checked)} />
-            <span>
-              <CelebrateMeMark size="sm" />
-              <strong>Get a free gift page.</strong> After you pay, Melody from FinZ will message you on WhatsApp to set up
-              your Celebrate Me page. Gifts go straight to Fash Shot It towards your balance. Ticking this shares your
-              name, phone, email, group tag and balance with FinZ Africa.
-            </span>
           </label>
         </fieldset>
       </div>

@@ -151,13 +151,13 @@ export function SettingsGate({ error }: { error: string }) {
   );
 }
 
-/** "Celebrate Me by FinZ": FinZ's own logo, since Celebrate Me is a FinZ product. */
-export function CelebrateMeMark({ size = "md" }: { size?: "sm" | "md" }) {
+/** "Wrapp by FinZ": FinZ's own logo, since Wrapp is a FinZ product. */
+export function WrappMark({ size = "md" }: { size?: "sm" | "md" }) {
   return (
     <span className={`bk-cm-mark bk-cm-mark--${size}`}>
       <img src="/images/partners/finz.png" alt="" />
       <span>
-        Celebrate Me <small>by FinZ</small>
+        Wrapp <small>by FinZ</small>
       </span>
     </span>
   );

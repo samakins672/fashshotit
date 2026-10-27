@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { useBasePath } from "./BookingApp";
 import { getBooking, isPreview, type Booking } from "./api";
-import { formatNaira, melodyWhatsapp, peopleLabel } from "./data";
-import { BookingFooter, BookingHeader, CelebrateMeMark, Icon, PreviewBanner } from "./Shell";
+import { buildWrappKitUrl, formatNaira, peopleLabel } from "./data";
+import { BookingFooter, BookingHeader, Icon, PreviewBanner, WrappMark } from "./Shell";
 
 const POLL_MS = 2500;
 const POLL_LIMIT = 24; // about a minute
@@ -40,66 +40,12 @@ function CopyTag({ tag }: { tag: string }) {
   );
 }
 
-/** Pops up over the confirmation for payers who ticked the Celebrate Me box. */
-function MelodyModal({ booking, onClose }: { booking: Booking; onClose: () => void }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    ref.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    document.body.classList.add("menu-open");
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.classList.remove("menu-open");
-    };
-  }, [onClose]);
-
-  return (
-    <div className="bk-modal" onClick={onClose}>
-      <div
-        ref={ref}
-        className="bk-modal-card"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="bk-modal-title"
-        tabIndex={-1}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button type="button" className="bk-modal-close" onClick={onClose} aria-label="Close">
-          <Icon name="close" size={20} />
-        </button>
-        <CelebrateMeMark />
-        <h2 id="bk-modal-title">Finish your gift page with Melody</h2>
-        <p>
-          Melody from FinZ is messaging you on WhatsApp now. Reply to finish your account and celebration page, then
-          share it so friends and family can chip in. Gifts go straight to Fash Shot It and come off your{" "}
-          {formatNaira(booking.balance)} balance.
-        </p>
-        <a className="bk-btn bk-btn--primary bk-btn--block" href={booking.giftPageUrl ?? melodyWhatsapp} target="_blank" rel="noreferrer">
-          <Icon name="chat" size={18} /> Open chat with Melody
-        </a>
-        <button type="button" className="bk-modal-later" onClick={onClose}>
-          Maybe later
-        </button>
-      </div>
-    </div>
-  );
-}
-
 export default function Confirmation() {
   const base = useBasePath();
   const [params] = useSearchParams();
   // Paystack appends ?reference= (and ?trxref=) to the callback URL
   const reference = params.get("reference") ?? params.get("trxref") ?? "";
   const [state, setState] = useState<State>({ kind: "loading" });
-  const [showMelody, setShowMelody] = useState(false);
-  const closeMelody = useCallback(() => setShowMelody(false), []);
-
-  // Pop the Melody card up once, as soon as an opted-in booking is confirmed
-  const optedIn = state.kind === "confirmed" && state.booking.finzOptIn;
-  useEffect(() => {
-    if (optedIn) setShowMelody(true);
-  }, [optedIn]);
 
   useEffect(() => {
     if (!reference) {
@@ -136,6 +82,13 @@ export default function Confirmation() {
       clearTimeout(timer);
     };
   }, [reference]);
+
+  const giftUrl =
+    state.kind === "confirmed"
+      ? state.booking.giftPageUrl || buildWrappKitUrl(state.booking.balance)
+      : "";
+  const shareText = `I booked my UNILAG convocation shoot with Fash Shot It. You can help me cover the balance with a gift: ${giftUrl}`;
+  const shareUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
 
   return (
     <div className="bk">
@@ -220,6 +173,26 @@ export default function Confirmation() {
                 </dl>
               </section>
 
+              <section className="bk-wrapp-card">
+                <WrappMark />
+                <h2>Let friends and family cover your balance.</h2>
+                <p>
+                  Make a free Wrapp page for your convocation. Friends and family can send you gifts, and the money goes
+                  to your own Wrapp account, not to Fash Shot It. You pay your balance on shoot day as usual.
+                </p>
+                <div className="bk-wrapp-actions">
+                  <a className="bk-btn bk-btn--primary" href={giftUrl} target="_blank" rel="noreferrer">
+                    Create your gift page
+                  </a>
+                  <a className="bk-btn bk-btn--outline" href={shareUrl} target="_blank" rel="noreferrer">
+                    <Icon name="chat" size={18} /> Share on WhatsApp
+                  </a>
+                </div>
+                <p className="bk-wrapp-note">
+                  Friends can send gifts from 60 days before your page's date, until a week after it.
+                </p>
+              </section>
+
               <section className="bk-next">
                 <h2>What happens next</h2>
                 <ol>
@@ -234,11 +207,6 @@ export default function Confirmation() {
                     balance.
                   </li>
                 </ol>
-                {state.booking.finzOptIn && (
-                  <button type="button" className="bk-link-btn" onClick={() => setShowMelody(true)}>
-                    <Icon name="chat" size={18} /> Finish your gift page with Melody
-                  </button>
-                )}
               </section>
             </div>
 
@@ -247,8 +215,6 @@ export default function Confirmation() {
                 Back to bookings
               </Link>
             </div>
-
-            {showMelody && <MelodyModal booking={state.booking} onClose={closeMelody} />}
           </>
         )}
       </main>

@@ -1,4 +1,4 @@
-import { defaultSettings, melodyWhatsapp, type BookingSettings } from "./data";
+import { buildWrappKitUrl, defaultSettings, type BookingSettings } from "./data";
 
 /**
  * Client for the UNILAG convocation booking API (served by the Worker under
@@ -20,8 +20,6 @@ export interface CheckoutRequest {
   ambassadorCode: string;
   consent: boolean;
   marketingOptIn: boolean;
-  /** Unticked by default: share booking details with FinZ so Melody can set up a Celebrate Me gift page */
-  finzOptIn: boolean;
 }
 
 export interface Booking {
@@ -37,8 +35,7 @@ export interface Booking {
   depositPaid: number;
   balance: number;
   shootPeriod: string;
-  finzOptIn: boolean;
-  /** Melody's WhatsApp chat link FinZ returns when the payer opted in */
+  /** Link to the student's Wrapp celebration kit */
   giftPageUrl?: string;
 }
 
@@ -116,8 +113,7 @@ export async function startCheckout(
     depositPaid: pkg.deposit,
     balance: pkg.total - pkg.deposit,
     shootPeriod: settings.shootPeriod,
-    finzOptIn: req.finzOptIn,
-    giftPageUrl: req.finzOptIn ? melodyWhatsapp : undefined,
+    giftPageUrl: buildWrappKitUrl(pkg.total - pkg.deposit),
   };
   try {
     const all = JSON.parse(sessionStorage.getItem(PREVIEW_KEY) ?? "{}");
