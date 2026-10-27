@@ -39,70 +39,70 @@ export interface PortfolioItem {
   media?: MediaItem;
 }
 
-const img = (path: string) => `/images/media/${path}`;
+const img = (path: string) => `/images/media/${path.replace(/\.(jpg|jpeg|png)$/i, ".webp")}`;
 
 export const portfolio: PortfolioItem[] = [
   {
     title: "Corporate Event",
     tags: "events",
     categories: ["events"],
-    thumb: img("events/FSI (71 of 397).jpg"),
+    thumb: img("events/FSI (71 of 397).webp"),
     project: "conferences-and-exhibitions",
   },
   {
     title: "Birthday Shoot",
     tags: "events, portraits",
     categories: ["events", "portraits"],
-    thumb: img("portraits/FSI_9758-ii.jpg"),
-    media: { type: "image", src: img("portraits/FSI_9758-ii.jpg"), caption: "Birthday Shoot" },
+    thumb: img("portraits/FSI_9758-ii.webp"),
+    media: { type: "image", src: img("portraits/FSI_9758-ii.webp"), caption: "Birthday Shoot" },
   },
   {
     title: "Real Estate",
     tags: "aerial photography, commercials",
     categories: ["commercials"],
-    thumb: img("commercials/DJI_0723.jpg"),
+    thumb: img("commercials/DJI_0723.webp"),
     project: "real-estate",
   },
   {
     title: "Advertisement",
     tags: "branding, commercials",
     categories: ["commercials"],
-    thumb: img("commercials/FSI_1142.jpg"),
+    thumb: img("commercials/FSI_1142.webp"),
     project: "advertisement",
   },
   {
     title: "Maternity Portrait",
     tags: "portraits, maternity",
     categories: ["portraits"],
-    thumb: img("portraits/FSI_1414.jpg"),
-    media: { type: "image", src: img("portraits/FSI_1414.jpg"), caption: "Maternity Portrait" },
+    thumb: img("portraits/FSI_1414.webp"),
+    media: { type: "image", src: img("portraits/FSI_1414.webp"), caption: "Maternity Portrait" },
   },
   {
     title: "Family Portrait",
     tags: "family, portraits",
     categories: ["portraits"],
-    thumb: img("portraits/FSI_1222 (2).jpg"),
-    media: { type: "image", src: img("portraits/FSI_1222 (2).jpg"), caption: "Family Portrait" },
+    thumb: img("portraits/FSI_1222 (2).webp"),
+    media: { type: "image", src: img("portraits/FSI_1222 (2).webp"), caption: "Family Portrait" },
   },
   {
     title: "Graduation Shoot",
     tags: "graduation, portraits",
     categories: ["portraits"],
-    thumb: img("portraits/FSI_8263.jpg"),
+    thumb: img("portraits/FSI_8263.webp"),
     project: "convocation-shoots",
   },
   {
     title: "Parties",
     tags: "events, celebrations",
     categories: ["events"],
-    thumb: img("events/FSI (643 of 682).JPG"),
-    media: { type: "image", src: img("events/FSI (643 of 682).JPG"), caption: "Parties" },
+    thumb: img("events/FSI (643 of 682).webp"),
+    media: { type: "image", src: img("events/FSI (643 of 682).webp"), caption: "Parties" },
   },
   {
     title: "Video Coverage",
     tags: "events, drone, outdoor, video",
     categories: ["events"],
-    thumb: img("events/FSI (202 of 682).JPG"),
+    thumb: img("events/FSI (202 of 682).webp"),
     media: { type: "youtube", id: "6IEHAjDBVHg", caption: "PWC Away Day (2024)" },
   },
 ];
@@ -120,7 +120,7 @@ export const projects: Project[] = [
   {
     slug: "conferences-and-exhibitions",
     title: "Conferences and Exhibitions",
-    images: [img("events/FSI (71 of 397).jpg"), img("events/DD (9 of 19).JPG")],
+    images: [img("events/FSI (71 of 397).webp"), img("events/DD (9 of 19).webp")],
     details: [
       { label: "Location", value: "Victoria Island, Lagos, Nigeria." },
       { label: "Production Date", value: "November 6th, 2024" },
@@ -135,7 +135,7 @@ export const projects: Project[] = [
   {
     slug: "convocation-shoots",
     title: "Convocation Shoots",
-    images: [img("portraits/FSI_7628.jpg"), img("portraits/FSI_8263.jpg")],
+    images: [img("portraits/FSI_7628.webp"), img("portraits/FSI_8263.webp")],
     details: [
       { label: "Location", value: "UNILAG, Lagos, Nigeria." },
       { label: "Production Date", value: "November 6th, 2024" },
@@ -149,13 +149,13 @@ export const projects: Project[] = [
         "The entire shoot felt so effortless and fun. Fash captured me in my element and made me feel proud of how far I’ve come. Every shot was clean, emotional, and full of life. I’ll treasure these convocation photos forever!",
       name: "Grace Adeyemi",
       role: "Class of 2024, UNILAG",
-      avatar: "/images/person_woman_1.jpg",
+      avatar: "/images/person_woman_1.webp",
     },
   },
   {
     slug: "real-estate",
     title: "Real Estate",
-    images: [img("commercials/DJI_0704.jpg"), img("commercials/DJI_0754.jpg"), img("commercials/DJI_0721.jpg")],
+    images: [img("commercials/DJI_0704.webp"), img("commercials/DJI_0754.webp"), img("commercials/DJI_0721.webp")],
     details: [{ label: "Project Date", value: "August 24th, 2024" }],
     description: [
       "This project involved a full-development shoot for a real estate firm aiming to showcase luxury properties from unique angles. Using both ground and aerial drone coverage, we captured sweeping exterior views, surrounding landscapes, and dynamic roof-to-ground transitions. The visuals highlighted architectural beauty, location value, and lifestyle appeal — crafted to boost listing engagement and attract high-value buyers.",
@@ -164,7 +164,7 @@ export const projects: Project[] = [
   {
     slug: "advertisement",
     title: "Advertisement",
-    images: [img("commercials/DJI_0158.jpg"), img("commercials/FSI_1131.jpg"), img("commercials/FSI_1142.jpg")],
+    images: [img("commercials/DJI_0158.webp"), img("commercials/FSI_1131.webp"), img("commercials/FSI_1142.webp")],
     details: [
       { label: "Project Date", value: "February 9th, 2025" },
       { label: "Client", value: "HYSTER" },
@@ -176,10 +176,10 @@ export const projects: Project[] = [
 ];
 
 export const clientLogos = [
-  { src: "/images/logo-google.png", alt: "Google" },
-  { src: "/images/logo-puma.png", alt: "Puma" },
-  { src: "/images/logo-paypal.png", alt: "PayPal" },
-  { src: "/images/logo-adobe.png", alt: "Adobe" },
+  { src: "/images/logo-google.webp", alt: "Google" },
+  { src: "/images/logo-puma.webp", alt: "Puma" },
+  { src: "/images/logo-paypal.webp", alt: "PayPal" },
+  { src: "/images/logo-adobe.webp", alt: "Adobe" },
 ];
 
 export const services = [
@@ -238,11 +238,13 @@ export const testimonials = [
   { quote: "Good morningggg Fash,\nAwwwwn🥰 so beautiful", name: "Faith Odumosu", role: "Family Shots" },
 ];
 
-export const navLinks = [
+/** `id` links to a section on the home page; `to` links to another page. */
+export const navLinks: { id: string; label: string; to?: string }[] = [
   { id: "portfolio", label: "Portfolio" },
   { id: "about", label: "About" },
   { id: "services", label: "Services" },
   { id: "skills", label: "Skills" },
   { id: "testimonials", label: "Testimonials" },
   { id: "contact", label: "Contact" },
+  { id: "book", label: "Book", to: "/bookings" },
 ];

@@ -9,7 +9,7 @@ export default function About() {
         <SectionHeading title="About Me" />
         <div className="about-grid">
           <Reveal variant="wipe" className="about-figure">
-            <img src="/images/about_me.png" alt="Festus of Fash Shot It" loading="lazy" />
+            <img src="/images/about_me.webp" alt="Festus of Fash Shot It" loading="lazy" />
           </Reveal>
           <div className="about-copy">
             <h3 className="heading-h3">

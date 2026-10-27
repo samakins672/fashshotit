@@ -156,6 +156,18 @@ strong {
   border-color: #fff;
 }
 
+.btn-solid {
+  background: #fff;
+  border-color: #fff;
+  color: #000;
+}
+
+.btn-solid:hover,
+.btn-solid:focus-visible {
+  background: transparent;
+  color: #fff;
+}
+
 .btn:disabled {
   opacity: 0.6;
   cursor: progress;
@@ -471,7 +483,7 @@ div.reveal-wipe {
   justify-content: center;
   text-align: center;
   overflow: hidden;
-  background: #000 url("/images/media/events/FSI (202 of 682).JPG") center / cover no-repeat;
+  background: #000 url("/images/media/events/FSI (202 of 682).webp") center / cover no-repeat;
   z-index: 1;
 }
 
@@ -523,6 +535,10 @@ div.reveal-wipe {
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.85);
   margin: 0;
+}
+
+.hero-actions {
+  margin-top: 2rem;
 }
 
 .scroll-cue {
@@ -781,7 +797,7 @@ div.reveal-wipe {
   inset: -30px auto auto -30px;
   width: 60%;
   height: 60%;
-  background: url("/images/dotted_light.png");
+  background: url("/images/dotted_light.webp");
   opacity: 0.4;
 }
 

@@ -40,17 +40,17 @@ export default function Nav() {
           <ul className="nav-list nav-list-left">
             {left.map((l) => (
               <li key={l.id}>
-                <Link to={`/#${l.id}`}>{l.label}</Link>
+                <Link to={l.to ?? `/#${l.id}`}>{l.label}</Link>
               </li>
             ))}
           </ul>
           <Link to="/" className="site-logo" aria-label="Fash Shot It — home">
-            <img src="/images/logo.png" alt="Fash Shot It" width={90} height={90} />
+            <img src="/images/logo.webp" alt="Fash Shot It" width={90} height={90} />
           </Link>
           <ul className="nav-list nav-list-right">
             {right.map((l) => (
               <li key={l.id}>
-                <Link to={`/#${l.id}`}>{l.label}</Link>
+                <Link to={l.to ?? `/#${l.id}`}>{l.label}</Link>
               </li>
             ))}
           </ul>
@@ -79,7 +79,7 @@ export default function Nav() {
           </li>
           {navLinks.map((l) => (
             <li key={l.id}>
-              <Link to={`/#${l.id}`} onClick={close} tabIndex={menuOpen ? 0 : -1}>
+              <Link to={l.to ?? `/#${l.id}`} onClick={close} tabIndex={menuOpen ? 0 : -1}>
                 {l.label}
               </Link>
             </li>

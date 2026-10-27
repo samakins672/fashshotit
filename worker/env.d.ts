@@ -1,4 +1,11 @@
-// Secrets aren't in wrangler.jsonc, so `wrangler types` can't see them.
-interface Env {
-  RESEND_API_KEY?: string;
+declare global {
+  interface Env {
+    DB: D1Database;
+    RESEND_API_KEY?: string;
+    PAYSTACK_SECRET_KEY?: string;
+    PAYSTACK_PUBLIC_KEY?: string;
+    WRAPP_KIT_URL?: string;
+  }
 }
+
+export {};
