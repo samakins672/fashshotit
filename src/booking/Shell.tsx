@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode, useId } from "react";
 import { Link, useLocation } from "react-router";
 import { contact, navLinks, socials } from "../data/site";
 import { useBasePath } from "./BookingApp";
@@ -156,6 +156,39 @@ export function WrappMark({ size = "md" }: { size?: "sm" | "md" }) {
   return (
     <span className={`bk-cm-mark bk-cm-mark--${size}`}>
       <img src="/images/partners/wrapp.png" alt="Wrapp" className="bk-wrapp-logo" />
+    </span>
+  );
+}
+
+/** The Wrapp wordmark for dark backgrounds: white "wrapp" with the bow over the double p in the lime gradient. */
+export function WrappWordmark({ className = "" }: { className?: string }) {
+  const id = useId().replace(/:/g, "");
+  return (
+    <span className={`bk-wordmark ${className}`} role="img" aria-label="Wrapp">
+      wra
+      <span className="bk-wordmark-pp">
+        pp
+        <svg viewBox="0 0 100 100" className="bk-wordmark-bow" aria-hidden="true">
+          <defs>
+            <linearGradient id={`g${id}`} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="#E4FF3B" />
+              <stop offset=".5" stopColor="#B5F21A" />
+              <stop offset="1" stopColor="#8FE33A" />
+            </linearGradient>
+            <mask id={`m${id}`} maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">
+              <rect width="100" height="100" fill="#fff" />
+              <circle cx="50" cy="58" r="16.3" fill="#000" />
+            </mask>
+          </defs>
+          <g fill={`url(#g${id})`} mask={`url(#m${id})`}>
+            <g transform="translate(50 58) scale(2.15)">
+              <path d="M0 0C-5-13-22-14-21-3C-20 6-8 5 0 0Z" />
+              <path d="M0 0C5-13 22-14 21-3C20 6 8 5 0 0Z" />
+            </g>
+          </g>
+          <circle cx="50" cy="58" r="11.8" fill={`url(#g${id})`} />
+        </svg>
+      </span>
     </span>
   );
 }

@@ -5,7 +5,7 @@ import { getBooking, isPreview, type Booking } from "./api";
 import { buildWrappKitUrl, formatNaira, peopleLabel } from "./data";
 import { contact } from "../data/site";
 import { popConfetti } from "./confetti";
-import { BookingFooter, BookingHeader, Icon, PreviewBanner, WrappMark } from "./Shell";
+import { BookingFooter, BookingHeader, Icon, PreviewBanner, WrappWordmark } from "./Shell";
 
 const POLL_MS = 2500;
 const POLL_LIMIT = 24;
@@ -118,7 +118,7 @@ function FloatingWrappKit({
         <Icon name="gift" size={26} />
       </span>
       <span className="bk-floating-text">
-        <WrappMark size="sm" />
+        <WrappWordmark />
         <strong>Cover {formatNaira(balance)} with gifts</strong>
       </span>
       <a href={giftUrl} target="_blank" rel="noreferrer" className="bk-floating-go">
@@ -140,7 +140,7 @@ function WrappModal({ giftUrl, balance, onClose }: { giftUrl: string; balance: n
         <button type="button" className="bk-modal-close" onClick={onClose} aria-label="Close">
           &times;
         </button>
-        <WrappMark size="sm" />
+        <WrappWordmark />
         <h3 id="bk-wrapp-modal-title">Let friends cover your balance</h3>
         <p className="bk-modal-amount">
           <strong>{formatNaira(balance)}</strong> is due on shoot day. Make a free Wrapp page and gifts go straight to you.

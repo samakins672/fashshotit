@@ -2028,8 +2028,45 @@ body.bk-body {
 }
 
 /* Wrapp, on the confirmation page: dark, in Wrapp's own colours (lime on near-black), and short on words */
-.bk-wd .bk-wrapp-logo {
-  filter: brightness(0) invert(1);
+.bk-wordmark {
+  display: inline-block;
+  padding-top: 0.38em;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: #f2f3ea;
+  white-space: nowrap;
+}
+
+.bk-wordmark-pp {
+  position: relative;
+  display: inline-block;
+}
+
+.bk-wordmark-bow {
+  position: absolute;
+  left: 50%;
+  top: -0.52em;
+  width: 0.72em;
+  height: 0.72em;
+  translate: -50% 0; /* centred over the pp; the animation moves the bow with transform */
+  animation: bk-ribbon-run 2.4s cubic-bezier(0.45, 0.05, 0.3, 1) infinite;
+}
+
+/* The bow slides in from the left, rests over the pp, tucks away, and repeats (as in the Wrapp app's loader). */
+@keyframes bk-ribbon-run {
+  0% { transform: translate(-3.4em, 0) rotate(-14deg); opacity: 0; }
+  14% { opacity: 1; }
+  40% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  64% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  86% { transform: translate(0, 0.6em) scale(0.55); opacity: 0; }
+  100% { transform: translate(0, 0.6em) scale(0.55); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bk-wordmark-bow {
+    animation: none;
+  }
 }
 
 .bk-floating-wrapp {
@@ -2070,10 +2107,9 @@ body.bk-body {
   gap: 2px;
 }
 
-.bk-floating-text .bk-wrapp-logo {
-  height: 24px;
-  max-width: 110px;
-  margin-bottom: 2px;
+.bk-floating-text .bk-wordmark {
+  font-size: 24px;
+  margin-bottom: 4px;
 }
 
 .bk-floating-text strong {
@@ -2237,9 +2273,8 @@ body.bk-body {
   background: #2e2a35;
 }
 
-.bk-modal .bk-wrapp-logo {
-  height: 44px;
-  max-width: 190px;
+.bk-modal .bk-wordmark {
+  font-size: 46px;
   margin: 0 auto 18px;
 }
 
