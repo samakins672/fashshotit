@@ -1154,23 +1154,39 @@ body.bk-body {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   width: 150px;
   height: 72px;
   margin-right: 12px;
-  padding: 0 16px;
   border: 1px solid var(--bk-line);
   border-radius: 16px;
   background: var(--bk-surface);
+  font-size: 18px;
+  font-weight: 900;
   box-sizing: border-box;
 }
 
 .bk-marquee-track li img {
-  max-width: 110px;
-  max-height: 40px;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Standalone landscape logo (Wrapp) - enlarged to fill card */
+.bk-marquee-track li.is-standalone {
+  gap: 0;
+  padding: 0 12px;
+}
+
+.bk-marquee-track li.is-standalone img {
+  max-width: 124px;
+  max-height: 56px;
   width: auto;
   height: auto;
+  border-radius: 0;
   object-fit: contain;
-  display: block;
 }
 
 .bk-marquee-track li.is-empty {
@@ -1205,11 +1221,21 @@ body.bk-body {
     height: 96px;
     margin-right: 16px;
     font-size: 22px;
+    gap: 12px;
   }
   .bk-marquee-track li img {
     width: 36px;
     height: 36px;
     border-radius: 9px;
+  }
+  .bk-marquee-track li.is-standalone {
+    padding: 0 16px;
+  }
+  .bk-marquee-track li.is-standalone img {
+    max-width: 134px;
+    max-height: 76px;
+    width: auto;
+    height: auto;
   }
 }
 

@@ -112,8 +112,8 @@ export function buildWrappKitUrl(balance: number, date?: string, baseUrl: string
 }
 
 /** Logos for the partners strip on the UNILAG page. Entries without a logo show as a placeholder tile. */
-export const partners: { name: string; logo?: string }[] = [
-  { name: "Wrapp", logo: "/images/partners/wrapp.png" },
+export const partners: { name: string; logo?: string; hideName?: boolean }[] = [
+  { name: "Wrapp", logo: "/images/partners/wrapp.png", hideName: true },
   { name: "FinZ", logo: "/images/partners/finz.png" },
   { name: "Partner" },
   { name: "Partner" },

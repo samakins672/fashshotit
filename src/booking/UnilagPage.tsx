@@ -95,9 +95,16 @@ function PartnersStrip() {
         <div className="bk-marquee">
           <ul className="bk-marquee-track">
             {row.map((p, i) => (
-              <li key={i} aria-hidden={i >= partners.length} className={p.logo ? "" : "is-empty"}>
+              <li
+                key={i}
+                aria-hidden={i >= partners.length}
+                className={`${p.logo ? "" : "is-empty"}${p.hideName ? " is-standalone" : ""}`}
+              >
                 {p.logo ? (
-                  <img src={p.logo} alt={p.name} />
+                  <>
+                    <img src={p.logo} alt={p.hideName ? p.name : ""} />
+                    {!p.hideName && <span>{p.name}</span>}
+                  </>
                 ) : (
                   "Partner logo"
                 )}
