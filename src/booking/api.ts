@@ -29,6 +29,9 @@ export interface Booking {
   status: "pending" | "confirmed";
   name: string;
   email: string;
+  phone?: string;
+  faculty?: string;
+  department?: string;
   packageSize: number;
   members: string[];
   total: number;

@@ -3,10 +3,11 @@ import { Link, useSearchParams } from "react-router";
 import { useBasePath } from "./BookingApp";
 import { getBooking, isPreview, type Booking } from "./api";
 import { buildWrappKitUrl, formatNaira, peopleLabel } from "./data";
+import { contact } from "../data/site";
 import { BookingFooter, BookingHeader, Icon, PreviewBanner, WrappMark } from "./Shell";
 
 const POLL_MS = 2500;
-const POLL_LIMIT = 24; // about a minute
+const POLL_LIMIT = 24;
 
 type State =
   | { kind: "loading" }
@@ -15,35 +16,28 @@ type State =
   | { kind: "confirmed"; booking: Booking }
   | { kind: "error"; message: string };
 
-function CopyTag({ tag }: { tag: string }) {
+function CopyButton({ text, label = "Copy Tag" }: { text: string; label?: string }) {
   const [copied, setCopied] = useState(false);
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(tag);
+      await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Clipboard blocked: the tag is still on screen to copy by hand
+      // Clipboard blocked
     }
   };
   return (
-    <section className="bk-tag">
-      <span className="bk-kicker">Your group tag</span>
-      <div className="bk-tag-row">
-        <strong className="bk-tag-value">{tag}</strong>
-        <button type="button" className="bk-tag-copy" onClick={copy}>
-          <Icon name={copied ? "check" : "copy"} size={16} /> {copied ? "Copied" : "Copy"}
-        </button>
-      </div>
-      <p>Quote this on shoot day and in any message to us. Share it with your group so everyone has it.</p>
-    </section>
+    <button type="button" className="bk-tag-copy" onClick={copy}>
+      <Icon name={copied ? "check" : "copy"} size={14} />
+      <span>{copied ? "Copied" : label}</span>
+    </button>
   );
 }
 
 export default function Confirmation() {
   const base = useBasePath();
   const [params] = useSearchParams();
-  // Paystack appends ?reference= (and ?trxref=) to the callback URL
   const reference = params.get("reference") ?? params.get("trxref") ?? "";
   const [state, setState] = useState<State>({ kind: "loading" });
 
@@ -56,7 +50,6 @@ export default function Confirmation() {
     let timer: ReturnType<typeof setTimeout>;
     let cancelled = false;
 
-    // The browser redirect never confirms a booking on its own: wait for the webhook to mark it confirmed
     const check = async () => {
       const res = await getBooking(reference);
       if (cancelled) return;
@@ -130,92 +123,139 @@ export default function Confirmation() {
         )}
 
         {state.kind === "confirmed" && (
-          <>
+          <div className="bk-confirm-inner">
             <div className="bk-confirm-head">
               <span className="bk-confirm-icon">
-                <Icon name="check" size={36} />
+                <Icon name="check" size={32} />
               </span>
-              <h1>You're booked, {state.booking.name.split(" ")[0]}.</h1>
+              <h1>You're booked, {state.booking.name.split(" ")[0]}!</h1>
               <p>
-                Your slot for UNILAG Convocation, {state.booking.shootPeriod}, is locked in. We've emailed your receipt
-                to <strong>{state.booking.email}</strong>.
+                Your slot for UNILAG Convocation ({state.booking.shootPeriod}) is locked in. Full order details
+                have been emailed to <strong>{state.booking.email}</strong>.
               </p>
             </div>
 
-            <div className="bk-confirm-grid">
-              <CopyTag tag={state.booking.reference} />
+            {/* Unified Booking Pass & Receipt */}
+            <article className="bk-pass">
+              {/* Pass Header / Tag Stub */}
+              <div className="bk-pass-stub">
+                <div className="bk-pass-stub-head">
+                  <span className="bk-pass-tag-label">Official Group Tag</span>
+                  <CopyButton text={state.booking.reference} />
+                </div>
+                <div className="bk-pass-tag-code">{state.booking.reference}</div>
+                <p className="bk-pass-tag-note">Quote this tag on shoot day and in any message to us. Share with your group.</p>
+              </div>
 
-              <section className="bk-receipt">
-                <h2>Receipt</h2>
-                <dl>
+              {/* Pass Details / Order Breakdown */}
+              <div className="bk-pass-body">
+                <div className="bk-card-title">
+                  <h2>Order Summary</h2>
+                  <span className="bk-status-pill">Deposit Paid</span>
+                </div>
+
+                <dl className="bk-dl">
                   <div>
-                    <dt>Package</dt>
+                    <dt>Shoot Event</dt>
+                    <dd>UNILAG Convocation ({state.booking.shootPeriod})</dd>
+                  </div>
+                  <div>
+                    <dt>Package size</dt>
                     <dd>{peopleLabel(state.booking.packageSize)}</dd>
                   </div>
-                  <div>
-                    <dt>Total</dt>
-                    <dd>{formatNaira(state.booking.total)}</dd>
-                  </div>
-                  <div>
-                    <dt>Deposit paid</dt>
-                    <dd>{formatNaira(state.booking.depositPaid)}</dd>
-                  </div>
+                  {(state.booking.faculty || state.booking.department) && (
+                    <div>
+                      <dt>Faculty / Dept</dt>
+                      <dd>{[state.booking.faculty, state.booking.department].filter(Boolean).join(" • ")}</dd>
+                    </div>
+                  )}
+                  {state.booking.phone && (
+                    <div>
+                      <dt>Contact Phone</dt>
+                      <dd>{state.booking.phone}</dd>
+                    </div>
+                  )}
                   {state.booking.members.length > 0 && (
                     <div>
-                      <dt>Group</dt>
+                      <dt>Group members</dt>
                       <dd>{[state.booking.name, ...state.booking.members].join(", ")}</dd>
                     </div>
                   )}
-                  <div className="bk-receipt-strong">
+                  <div>
+                    <dt>Total package</dt>
+                    <dd>{formatNaira(state.booking.total)}</dd>
+                  </div>
+                  <div>
+                    <dt>Deposit paid (50%)</dt>
+                    <dd className="bk-paid-val">
+                      <span>{formatNaira(state.booking.depositPaid)}</span>
+                      <span className="bk-badge-paid">Paid</span>
+                    </dd>
+                  </div>
+                  <div className="bk-dl-total">
                     <dt>Balance on shoot day</dt>
                     <dd>{formatNaira(state.booking.balance)}</dd>
                   </div>
                 </dl>
-              </section>
+              </div>
 
-              <section className="bk-wrapp-card">
-                <WrappMark />
-                <h2>Let friends and family cover your balance.</h2>
-                <p>
-                  Make a free Wrapp page for your convocation. Friends and family can send you gifts, and the money goes
-                  to your own Wrapp account, not to Fash Shot It. You pay your balance on shoot day as usual.
-                </p>
-                <div className="bk-wrapp-actions">
-                  <a className="bk-btn bk-btn--primary" href={giftUrl} target="_blank" rel="noreferrer">
-                    Create your gift page
-                  </a>
-                  <a className="bk-btn bk-btn--outline" href={shareUrl} target="_blank" rel="noreferrer">
-                    <Icon name="chat" size={18} /> Share on WhatsApp
-                  </a>
-                </div>
-                <p className="bk-wrapp-note">
-                  Friends can send gifts from 60 days before your page's date, until a week after it.
-                </p>
-              </section>
-
-              <section className="bk-next">
-                <h2>What happens next</h2>
-                <ol>
+              {/* Pass Footer / Next Steps */}
+              <div className="bk-pass-steps">
+                <h3>What happens next</h3>
+                <ol className="bk-steps-list">
                   <li>
-                    <strong>Check your email</strong> for the receipt and your tag.
+                    <strong>Check your email</strong> &mdash; we sent your full receipt and order summary to{" "}
+                    {state.booking.email}.
                   </li>
                   <li>
-                    <strong>We'll confirm the date on WhatsApp</strong> with the time and meeting point.
+                    <strong>WhatsApp coordination</strong> &mdash; our team will message{" "}
+                    {state.booking.phone || "your phone"} with the exact campus meeting point and call time.
                   </li>
                   <li>
-                    <strong>Show up on shoot day</strong>, quote your tag and pay the {formatNaira(state.booking.balance)}{" "}
-                    balance.
+                    <strong>Show up on shoot day</strong> &mdash; quote your group tag and pay the remaining{" "}
+                    {formatNaira(state.booking.balance)} balance.
                   </li>
                 </ol>
-              </section>
-            </div>
+              </div>
+            </article>
 
-            <div className="bk-confirm-back">
-              <Link to={base || "/"} className="bk-btn bk-btn--outline">
+            {/* Wrapp Celebration Kit Companion Card */}
+            <section className="bk-card bk-wrapp-card">
+              <div className="bk-wrapp-header">
+                <WrappMark />
+              </div>
+              <h2>Let friends and family cover your balance.</h2>
+              <p>
+                Make a free Wrapp page for your convocation. Friends and family can send you graduation gifts,
+                and the money goes directly to your own account, not to Fash Shot It. You pay your balance on shoot day as usual.
+              </p>
+              <div className="bk-wrapp-actions">
+                <a className="bk-btn bk-btn--primary" href={giftUrl} target="_blank" rel="noreferrer">
+                  Create your gift page
+                </a>
+                <a className="bk-btn bk-btn--outline" href={shareUrl} target="_blank" rel="noreferrer">
+                  <Icon name="chat" size={18} /> Share on WhatsApp
+                </a>
+              </div>
+              <p className="bk-wrapp-note">
+                Friends can send gifts from 60 days before your shoot date, until a week after it.
+              </p>
+            </section>
+
+            {/* Support info & Navigation */}
+            <div className="bk-confirm-support">
+              <p>
+                Questions or changes? Chat directly with us on WhatsApp at{" "}
+                <a href={contact.whatsapp} target="_blank" rel="noreferrer">
+                  {contact.phoneDisplay}
+                </a>{" "}
+                or email <a href="mailto:media@fashshotit.com">media@fashshotit.com</a>.
+              </p>
+              <Link to={base || "/"} className="bk-btn bk-btn--outline bk-btn--sm">
                 Back to bookings
               </Link>
             </div>
-          </>
+          </div>
         )}
       </main>
       <BookingFooter />

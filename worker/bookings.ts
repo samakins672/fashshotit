@@ -104,7 +104,12 @@ async function verifyPaystackSignature(
 
 /** Send confirmation email to client and notification to team */
 async function sendConfirmationEmails(booking: BookingRow, env: Env) {
-  if (!env.RESEND_API_KEY) return;
+  if (!env.RESEND_API_KEY) {
+    console.warn(
+      `[Resend] RESEND_API_KEY is not configured. Booking confirmation email was NOT sent to ${booking.email} (tag: ${booking.reference}).`
+    );
+    return;
+  }
 
   const membersList: string[] = (() => {
     try {
@@ -116,63 +121,154 @@ async function sendConfirmationEmails(booking: BookingRow, env: Env) {
 
   const membersHtml =
     membersList.length > 0
-      ? `<p><strong>Group Members:</strong> ${escapeHtml([booking.name, ...membersList].join(", "))}</p>`
+      ? `
+        <tr style="border-bottom: 1px solid #eee;">
+          <td style="padding: 11px 0; color: #666; font-size: 14px;">Group Members:</td>
+          <td style="padding: 11px 0; font-weight: 600; text-align: right; color: #111; font-size: 14px;">
+            ${escapeHtml([booking.name, ...membersList].join(", "))}
+          </td>
+        </tr>`
+      : "";
+
+  const facultyHtml =
+    booking.faculty || booking.department
+      ? `
+        <tr style="border-bottom: 1px solid #eee;">
+          <td style="padding: 11px 0; color: #666; font-size: 14px;">Faculty / Dept:</td>
+          <td style="padding: 11px 0; font-weight: 600; text-align: right; color: #111; font-size: 14px;">
+            ${escapeHtml([booking.faculty, booking.department].filter(Boolean).join(" • "))}
+          </td>
+        </tr>`
       : "";
 
   const clientHtml = `
-    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #111;">
-      <h2 style="color: #000;">Your UNILAG Convocation Shoot is Confirmed!</h2>
-      <p>Hi ${escapeHtml(booking.name.split(" ")[0])},</p>
-      <p>Your booking for UNILAG Convocation (${escapeHtml(booking.shoot_period)}) has been received and confirmed.</p>
-      
-      <div style="background-color: #f7f5f0; border-radius: 8px; padding: 20px; margin: 24px 0; border: 1px solid #e2ded4;">
-        <p style="margin: 0 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #666;">Your Group Tag</p>
-        <p style="margin: 0; font-size: 28px; font-weight: bold; letter-spacing: 2px; color: #111;">${escapeHtml(booking.reference)}</p>
-        <p style="margin: 8px 0 0; font-size: 13px; color: #666;">Quote this on shoot day and in any message to us.</p>
-      </div>
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Booking Confirmed - Fash Shot It</title>
+    </head>
+    <body style="margin: 0; padding: 24px 12px; background-color: #f7f5f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1a1a1a; -webkit-font-smoothing: antialiased;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 16px; border: 1px solid #e8e3d8; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
+        
+        <!-- Header -->
+        <tr>
+          <td style="background-color: #111111; padding: 28px 32px; text-align: center;">
+            <p style="margin: 0 0 6px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #e6b800; font-weight: 800;">Fash Shot It Media</p>
+            <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 800; letter-spacing: -0.02em;">Booking & Payment Receipt</h1>
+          </td>
+        </tr>
 
-      <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
-        <tr style="border-bottom: 1px solid #eee;">
-          <td style="padding: 10px 0; color: #555;">Package:</td>
-          <td style="padding: 10px 0; font-weight: bold; text-align: right;">${booking.package_size} ${booking.package_size === 1 ? "Person" : "People"}</td>
+        <!-- Body -->
+        <tr>
+          <td style="padding: 32px 32px 24px;">
+            <p style="margin: 0 0 14px; font-size: 16px; line-height: 1.5; color: #222;">
+              Hi <strong>${escapeHtml(booking.name.split(" ")[0])}</strong>,
+            </p>
+            <p style="margin: 0 0 24px; font-size: 15px; line-height: 1.6; color: #444;">
+              Your convocation photography booking is confirmed! Your 50% deposit has been received and your slot for <strong>UNILAG Convocation (${escapeHtml(booking.shoot_period)})</strong> is secured.
+            </p>
+
+            <!-- Group Tag Card -->
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background: #111111; border-radius: 12px; margin-bottom: 24px;">
+              <tr>
+                <td style="padding: 20px 24px; text-align: center;">
+                  <span style="font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: #999; display: block; margin-bottom: 6px;">Your Official Group Tag</span>
+                  <span style="font-size: 28px; font-weight: 900; letter-spacing: 2px; color: #e6b800; display: block; font-family: 'Courier New', Courier, monospace;">${escapeHtml(booking.reference)}</span>
+                  <span style="font-size: 12px; color: #aaa; display: block; margin-top: 6px;">Quote this tag on shoot day and in any message to us.</span>
+                </td>
+              </tr>
+            </table>
+
+            <!-- Order Breakdown -->
+            <h3 style="margin: 0 0 12px; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; color: #666; font-weight: 700;">Order Details</h3>
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
+              <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 11px 0; color: #666; font-size: 14px;">Shoot:</td>
+                <td style="padding: 11px 0; font-weight: 600; text-align: right; color: #111; font-size: 14px;">UNILAG Convocation (${escapeHtml(booking.shoot_period)})</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 11px 0; color: #666; font-size: 14px;">Package:</td>
+                <td style="padding: 11px 0; font-weight: 600; text-align: right; color: #111; font-size: 14px;">${booking.package_size} ${booking.package_size === 1 ? "Person (Solo)" : "People"}</td>
+              </tr>
+              ${facultyHtml}
+              ${membersHtml}
+              <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 11px 0; color: #666; font-size: 14px;">Contact Phone:</td>
+                <td style="padding: 11px 0; font-weight: 600; text-align: right; color: #111; font-size: 14px;">${escapeHtml(booking.phone)}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 11px 0; color: #666; font-size: 14px;">Total Package:</td>
+                <td style="padding: 11px 0; font-weight: 600; text-align: right; color: #111; font-size: 14px;">${formatNaira(booking.total)}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 11px 0; color: #666; font-size: 14px;">Deposit Paid (50%):</td>
+                <td style="padding: 11px 0; font-weight: 700; text-align: right; color: #1e7e34; font-size: 14px;">
+                  ${formatNaira(booking.deposit_paid)} <span style="display: inline-block; background: #e8f5e9; color: #1e7e34; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 6px;">PAID</span>
+                </td>
+              </tr>
+              <tr style="border-bottom: 2px solid #111;">
+                <td style="padding: 14px 0; font-weight: 700; color: #111; font-size: 15px;">Balance on Shoot Day:</td>
+                <td style="padding: 14px 0; font-weight: 800; text-align: right; color: #111; font-size: 17px;">${formatNaira(booking.balance)}</td>
+              </tr>
+            </table>
+
+            <!-- Next Steps -->
+            <h3 style="margin: 0 0 12px; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; color: #666; font-weight: 700;">What Happens Next?</h3>
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 24px; background: #faf8f5; border-radius: 10px; border: 1px solid #eee9df;">
+              <tr>
+                <td style="padding: 18px 20px;">
+                  <div style="margin-bottom: 12px; font-size: 14px; line-height: 1.5; color: #333;">
+                    <strong style="color: #111;">1. Keep your group tag handy</strong><br/>
+                    Share <strong>${escapeHtml(booking.reference)}</strong> with everyone in your group.
+                  </div>
+                  <div style="margin-bottom: 12px; font-size: 14px; line-height: 1.5; color: #333;">
+                    <strong style="color: #111;">2. WhatsApp schedule confirmation</strong><br/>
+                    Our team will reach out to <strong>${escapeHtml(booking.phone)}</strong> with your campus meeting point and exact call time.
+                  </div>
+                  <div style="font-size: 14px; line-height: 1.5; color: #333;">
+                    <strong style="color: #111;">3. Shoot day on campus</strong><br/>
+                    Quote your tag, take your photos, and settle the remaining balance of <strong>${formatNaira(booking.balance)}</strong>.
+                  </div>
+                </td>
+              </tr>
+            </table>
+
+            <!-- Wrapp Gift Page Callout -->
+            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background: #fbf9f4; border: 1px solid #e7e2d6; border-radius: 12px; margin-bottom: 24px;">
+              <tr>
+                <td style="padding: 22px 24px;">
+                  <span style="display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #7c3aed; margin-bottom: 6px;">Wrapp by FinZ</span>
+                  <h4 style="margin: 0 0 8px; font-size: 16px; font-weight: 800; color: #111;">Let friends and family cover your balance.</h4>
+                  <p style="margin: 0 0 16px; font-size: 13.5px; line-height: 1.5; color: #555;">
+                    Make a free Wrapp celebration page. Friends and family can send you gifts, and the money goes directly to your own account, not to Fash Shot It. You pay your balance on shoot day as usual.
+                  </p>
+                  <a href="${escapeHtml(buildWrappKitUrl(env.WRAPP_KIT_URL, booking.balance))}" target="_blank" rel="noreferrer" style="display: inline-block; background-color: #111111; color: #ffffff; text-decoration: none; padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: 13px;">
+                    Create your gift page &rarr;
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <!-- Support -->
+            <p style="margin: 0; font-size: 13.5px; line-height: 1.5; color: #666; border-top: 1px solid #eee; padding-top: 18px;">
+              Need help or want to adjust details? Chat directly with Fash on WhatsApp at <a href="https://wa.me/2347061874236" style="color: #111; font-weight: 700;">+234 706 187 4236</a> or email <a href="mailto:media@fashshotit.com" style="color: #111;">media@fashshotit.com</a>.
+            </p>
+          </td>
         </tr>
-        <tr style="border-bottom: 1px solid #eee;">
-          <td style="padding: 10px 0; color: #555;">Total Package:</td>
-          <td style="padding: 10px 0; font-weight: bold; text-align: right;">${formatNaira(booking.total)}</td>
-        </tr>
-        <tr style="border-bottom: 1px solid #eee;">
-          <td style="padding: 10px 0; color: #555;">Deposit Paid (50%):</td>
-          <td style="padding: 10px 0; font-weight: bold; color: #2e7d32; text-align: right;">${formatNaira(booking.deposit_paid)}</td>
-        </tr>
-        <tr style="border-bottom: 1px solid #eee;">
-          <td style="padding: 10px 0; color: #555;">Balance on Shoot Day:</td>
-          <td style="padding: 10px 0; font-weight: bold; text-align: right;">${formatNaira(booking.balance)}</td>
+
+        <!-- Footer -->
+        <tr>
+          <td style="background-color: #f7f5f0; padding: 18px 32px; text-align: center; border-top: 1px solid #e8e3d8;">
+            <p style="margin: 0; font-size: 12px; color: #888;">
+              &copy; 2026 Fash Shot It Media. Photography, video and drone coverage in Lagos.
+            </p>
+          </td>
         </tr>
       </table>
-
-      ${membersHtml}
-
-      <div style="background-color: #f7f5f0; border-radius: 8px; padding: 20px; margin: 24px 0; border: 1px solid #e2ded4;">
-        <h3 style="margin: 0 0 8px; color: #111;">Let friends and family cover your balance.</h3>
-        <p style="margin: 0 0 16px; font-size: 14px; line-height: 1.5; color: #444;">
-          Make a free Wrapp page for your convocation. Friends and family can send you gifts, and the money goes to your own Wrapp account, not to Fash Shot It. You pay your balance on shoot day as usual.
-        </p>
-        <a href="${escapeHtml(buildWrappKitUrl(env.WRAPP_KIT_URL, booking.balance))}" target="_blank" rel="noreferrer" style="display: inline-block; background-color: #111; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 14px;">
-          Create your gift page
-        </a>
-      </div>
-
-      <h3>What happens next?</h3>
-      <ol style="line-height: 1.6; color: #333;">
-        <li>Keep your group tag safe. Share it with anyone in your group.</li>
-        <li>We will contact you via WhatsApp on <strong>${escapeHtml(booking.phone)}</strong> with the meeting point, schedule and session time.</li>
-        <li>Show up on campus, present your group tag, and pay the remaining balance of ${formatNaira(booking.balance)}.</li>
-      </ol>
-
-      <p style="margin-top: 30px; font-size: 14px; color: #666;">
-        Questions? Reach us directly on WhatsApp at <a href="https://wa.me/2347061874236">+234 706 187 4236</a> or email media@fashshotit.com.
-      </p>
-    </div>
+    </body>
+    </html>
   `;
 
   // Send to client
@@ -541,6 +637,9 @@ export async function handleBookings(request: Request, env: Env, url: URL): Prom
       status: row.status,
       name: row.name,
       email: row.email,
+      phone: row.phone,
+      faculty: row.faculty ?? undefined,
+      department: row.department ?? undefined,
       packageSize: row.package_size,
       members,
       total: row.total,
