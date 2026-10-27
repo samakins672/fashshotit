@@ -45,7 +45,7 @@ const PACKAGES: BookingPackage[] = [
 ];
 
 const SLOT_TARGET = 50;
-const REFUND_DEADLINE = "2027-01-15";
+const REFUND_DEADLINE = "March 2027";
 const SHOOT_PERIOD = "March 2027";
 const DEFAULT_WRAPP_KIT_URL = "https://wrapp.africa/kit/unilag";
 

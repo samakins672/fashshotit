@@ -35,7 +35,7 @@ export const defaultSettings: BookingSettings = {
   ],
   slotTarget: 50,
   slotsFilled: 0,
-  refundDeadline: "2027-01-15",
+  refundDeadline: "March 2027",
   shootPeriod: "March 2027",
 };
 
@@ -95,8 +95,14 @@ export const steps = [
   { title: "Pay the balance on shoot day", text: "Quote your tag on the day and pay the remaining 50%." },
 ];
 
-export const formatDate = (iso: string) =>
-  new Date(`${iso}T00:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+export const formatDate = (val: string) => {
+  if (!val) return "";
+  if (!/^\d{4}-\d{2}-\d{2}/.test(val)) return val;
+  const d = new Date(`${val}T00:00:00`);
+  return isNaN(d.getTime())
+    ? val
+    : d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+};
 
 export const peopleLabel = (n: number) => (n === 1 ? "1 person" : `${n} people`);
 
