@@ -28,7 +28,7 @@ export default function BookingsHome() {
         title="Moments worth keeping, shot right."
       >
         <p className="bk-hero-sub">
-          Photoshoots, video coverage and drone shoots for {occasions.slice(0, -1).join(", ").toLowerCase()} and{" "}
+          Studio sessions, video coverage and drone shoots for {occasions.slice(0, -1).join(", ").toLowerCase()} and{" "}
           {occasions[occasions.length - 1].toLowerCase()} across Lagos.
         </p>
         <div className="bk-hero-actions">

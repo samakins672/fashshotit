@@ -39,24 +39,29 @@ export const defaultSettings: BookingSettings = {
   shootPeriod: "March 2027",
 };
 
-/** Fash's general services, listed on the bookings home page until they send real packages and prices. */
+export const formatNaira = (n: number) => `₦${n.toLocaleString("en-NG")}`;
+
+/** Fash's general services, listed on the bookings home page. */
 export const services = [
   {
-    title: "Photoshoot",
+    title: "Studio session",
     text: "Portraits, family and group shoots, styled on location or in studio.",
     image: "/images/media/portraits/FSI_1764.jpg",
+    price: formatNaira(100_000),
   },
   {
     title: "Video coverage",
     text: "Cinematic coverage of your day, edited into a film you'll want to rewatch.",
     image: "/images/media/events/FSI (643 of 682).JPG",
+    price: formatNaira(200_000),
   },
   {
     title: "Drone shoot",
     text: "Licensed aerial photos and video that show the whole scale of your event.",
     image: "/images/media/commercials/DJI_0704.jpg",
+    price: formatNaira(200_000),
   },
-].map((s) => ({ ...s, price: "[PRICE]" }));
+];
 
 export const occasions = ["Birthdays", "Anniversaries", "Weddings", "Convocations"];
 
@@ -89,8 +94,6 @@ export const steps = [
   { title: "Get your group tag", text: "A tag like FSM-ADEYEMI-012 lands in your email. Keep it safe." },
   { title: "Pay the balance on shoot day", text: "Quote your tag on the day and pay the remaining 50%." },
 ];
-
-export const formatNaira = (n: number) => `₦${n.toLocaleString("en-NG")}`;
 
 export const formatDate = (iso: string) =>
   new Date(`${iso}T00:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
