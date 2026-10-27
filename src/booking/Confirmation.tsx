@@ -140,9 +140,6 @@ function WrappModal({ giftUrl, balance, onClose }: { giftUrl: string; balance: n
         <button type="button" className="bk-modal-close" onClick={onClose} aria-label="Close">
           &times;
         </button>
-        <span className="bk-modal-gift" aria-hidden="true">
-          <Icon name="gift" size={44} />
-        </span>
         <WrappMark size="sm" />
         <h3 id="bk-wrapp-modal-title">Let friends cover your balance</h3>
         <p className="bk-modal-amount">

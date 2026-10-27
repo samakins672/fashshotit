@@ -2071,7 +2071,9 @@ body.bk-body {
 }
 
 .bk-floating-text .bk-wrapp-logo {
-  height: 16px;
+  height: 24px;
+  max-width: 110px;
+  margin-bottom: 2px;
 }
 
 .bk-floating-text strong {
@@ -2204,7 +2206,7 @@ body.bk-body {
   position: relative;
   width: 100%;
   max-width: 400px;
-  padding: 36px 26px 26px;
+  padding: 44px 26px 26px;
   border: 1px solid #2e2a35;
   border-radius: 28px;
   background: #0f0d13;
@@ -2235,22 +2237,10 @@ body.bk-body {
   background: #2e2a35;
 }
 
-.bk-modal-gift {
-  display: grid;
-  place-items: center;
-  width: 84px;
-  height: 84px;
-  margin: 0 auto 18px;
-  border-radius: 28px;
-  background: #b5f21a;
-  color: #17121f;
-  transform: rotate(-6deg);
-  box-shadow: 0 10px 30px rgba(181, 242, 26, 0.28);
-}
-
 .bk-modal .bk-wrapp-logo {
-  height: 20px;
-  margin: 0 auto 14px;
+  height: 44px;
+  max-width: 190px;
+  margin: 0 auto 18px;
 }
 
 .bk-modal h3 {
