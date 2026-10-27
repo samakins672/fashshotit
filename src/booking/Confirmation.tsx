@@ -114,12 +114,14 @@ function FloatingWrappKit({
 
   return (
     <aside className="bk-floating-wrapp bk-wd" aria-label="Wrapp gift page">
-      <span className="bk-floating-text">
-        <WrappWordmark />
-        <strong>Cover {formatNaira(balance)} with gifts</strong>
-      </span>
-      <a href={giftUrl} target="_blank" rel="noreferrer" className="bk-floating-go">
-        Start
+      <a href={giftUrl} target="_blank" rel="noreferrer" className="bk-floating-link">
+        <span className="bk-floating-text">
+          <WrappWordmark />
+          <span className="bk-floating-cta">Cover {formatNaira(balance)} with gifts</span>
+        </span>
+        <span className="bk-floating-arrow" aria-hidden="true">
+          <Icon name="arrow" size={20} />
+        </span>
       </a>
       <button type="button" className="bk-floating-close" onClick={() => setDismissed(true)} aria-label="Close">
         &times;
