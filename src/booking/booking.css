@@ -2262,9 +2262,14 @@ body.bk-body {
   background: #2e2a35;
 }
 
+.bk-modal-brand {
+  margin-bottom: 22px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #2e2a35;
+}
+
 .bk-modal .bk-wordmark {
   font-size: 46px;
-  margin: 0 auto 18px;
 }
 
 .bk-modal h3 {
@@ -2277,7 +2282,7 @@ body.bk-body {
 }
 
 .bk-modal-amount {
-  margin: 12px 0 0;
+  margin: 14px 0 0;
   font-size: 17px;
   line-height: 1.4;
   color: #cfcbd6;

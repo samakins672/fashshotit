@@ -137,7 +137,9 @@ function WrappModal({ giftUrl, balance, onClose }: { giftUrl: string; balance: n
         <button type="button" className="bk-modal-close" onClick={onClose} aria-label="Close">
           &times;
         </button>
-        <WrappWordmark />
+        <div className="bk-modal-brand">
+          <WrappWordmark />
+        </div>
         <h3 id="bk-wrapp-modal-title">Let friends cover your balance</h3>
         <p className="bk-modal-amount">
           <strong>{formatNaira(balance)}</strong> is due on shoot day. Make a free Wrapp page and gifts go straight to you.
