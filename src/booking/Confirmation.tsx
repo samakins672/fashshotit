@@ -193,6 +193,7 @@ export default function Confirmation() {
   const [params] = useSearchParams();
   const reference = params.get("reference") ?? params.get("trxref") ?? "";
   const [state, setState] = useState<State>({ kind: "loading" });
+  const [showWrappModal, setShowWrappModal] = useState(true);
 
   useEffect(() => {
     if (!reference) {
@@ -376,6 +377,57 @@ export default function Confirmation() {
               balance={state.booking.balance}
               autoCountdown={Boolean(state.booking.finzOptIn)}
             />
+
+            {/* Post-Payment Wrapp Celebration Page Prompt Modal */}
+            {showWrappModal && (
+              <div className="bk-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="bk-wrapp-modal-title">
+                <div className="bk-modal">
+                  <div className="bk-modal-header">
+                    <WrappMark size="sm" />
+                    <button
+                      type="button"
+                      className="bk-modal-close"
+                      onClick={() => setShowWrappModal(false)}
+                      aria-label="Close"
+                    >
+                      &times;
+                    </button>
+                  </div>
+
+                  <div className="bk-modal-body">
+                    <h3 id="bk-wrapp-modal-title">Cover your shoot balance with gifts</h3>
+                    <p>
+                      Your convocation shoot is locked in! You paid a 50% deposit of{" "}
+                      <strong>{formatNaira(state.booking.depositPaid)}</strong>. Your remaining balance is{" "}
+                      <strong>{formatNaira(state.booking.balance)}</strong> on shoot day.
+                    </p>
+                    <div className="bk-modal-callout">
+                      Would you like to auto-create a free <strong>Wrapp celebration page</strong>?
+                      Friends and family can send you gifts directly to your own account to help cover your balance.
+                    </div>
+                  </div>
+
+                  <div className="bk-modal-actions">
+                    <a
+                      href={giftUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="bk-btn bk-btn--accent bk-btn--block"
+                      onClick={() => setShowWrappModal(false)}
+                    >
+                      Yes, create my gift page &rarr;
+                    </a>
+                    <button
+                      type="button"
+                      className="bk-btn bk-btn--ghost bk-btn--block"
+                      onClick={() => setShowWrappModal(false)}
+                    >
+                      No thanks, view my receipt
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </>
         )}
       </main>

@@ -86,7 +86,6 @@ export default function BookingForm({
     ambassadorCode: new URLSearchParams(window.location.search).get("ref")?.toUpperCase() ?? "",
     consent: false,
     marketingOptIn: false,
-    finzOptIn: true,
   });
   const [members, setMembers] = useState<string[]>([]);
   const [errors, setErrors] = useState<Errors>({});
@@ -133,6 +132,7 @@ export default function BookingForm({
         phone: normalisePhone(form.phone)!,
         email: form.email.trim(),
         members: members.map((m) => m.trim()),
+        finzOptIn: false,
       },
       settings,
       `${base}/unilag/confirmed`,
@@ -252,11 +252,6 @@ export default function BookingForm({
             </span>
           </label>
           {errors.consent && <span className="bk-error bk-error--check">{errors.consent}</span>}
-
-          <label className="bk-check">
-            <input type="checkbox" checked={form.finzOptIn} onChange={(e) => set("finzOptIn", e.target.checked)} />
-            <span>Auto-create my free Wrapp gift page so friends and family can cover my balance.</span>
-          </label>
 
           <label className="bk-check">
             <input type="checkbox" checked={form.marketingOptIn} onChange={(e) => set("marketingOptIn", e.target.checked)} />
