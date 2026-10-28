@@ -316,13 +316,25 @@ export default function Confirmation() {
                   <h3>What happens next</h3>
                   <ol className="bk-steps-list">
                     <li>
-                      <strong>Check your email</strong> &mdash; receipt sent to {state.booking.email}.
+                      <span className="bk-step-text">
+                        <strong>Check your email</strong>
+                        <span className="bk-step-dash"> &mdash; </span>
+                        <span className="bk-step-desc">receipt sent to {state.booking.email}.</span>
+                      </span>
                     </li>
                     <li>
-                      <strong>WhatsApp coordination</strong> &mdash; we will message you with the campus meeting point.
+                      <span className="bk-step-text">
+                        <strong>WhatsApp coordination</strong>
+                        <span className="bk-step-dash"> &mdash; </span>
+                        <span className="bk-step-desc">we will message you with the campus meeting point.</span>
+                      </span>
                     </li>
                     <li>
-                      <strong>Shoot day on campus</strong> &mdash; quote your tag and settle the remaining {formatNaira(state.booking.balance)} balance.
+                      <span className="bk-step-text">
+                        <strong>Shoot day on campus</strong>
+                        <span className="bk-step-dash"> &mdash; </span>
+                        <span className="bk-step-desc">quote your tag and settle the remaining {formatNaira(state.booking.balance)} balance.</span>
+                      </span>
                     </li>
                   </ol>
                 </div>

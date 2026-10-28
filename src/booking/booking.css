@@ -2042,6 +2042,20 @@ body.bk-body {
   color: var(--bk-ink);
 }
 
+.bk-step-text {
+  min-width: 0;
+}
+
+/* On a phone the bold title sits on its own line with the detail underneath (no dash) */
+@media (max-width: 640px) {
+  .bk-steps-list strong {
+    display: block;
+  }
+  .bk-step-dash {
+    display: none;
+  }
+}
+
 .bk-receipt-actions {
   margin-top: 18px;
   padding-top: 14px;
