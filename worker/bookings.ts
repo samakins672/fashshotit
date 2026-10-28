@@ -47,7 +47,7 @@ const PACKAGES: BookingPackage[] = [
 const SLOT_TARGET = 50;
 const REFUND_DEADLINE = "March 2027";
 const SHOOT_PERIOD = "March 2027";
-const DEFAULT_WRAPP_KIT_URL = "https://wrapp.africa/kit/unilag";
+const DEFAULT_WRAPP_KIT_URL = "https://sandbos-app.wrapp.ng/kit/up5jpqap";
 
 function buildWrappKitUrl(baseUrl: string | undefined, balance: number, date?: string): string {
   const base = baseUrl || DEFAULT_WRAPP_KIT_URL;

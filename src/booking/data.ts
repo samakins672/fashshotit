@@ -106,7 +106,7 @@ export const formatDate = (val: string) => {
 
 export const peopleLabel = (n: number) => (n === 1 ? "1 person" : `${n} people`);
 
-export const DEFAULT_WRAPP_KIT_URL = "https://wrapp.africa/kit/unilag";
+export const DEFAULT_WRAPP_KIT_URL = "https://sandbos-app.wrapp.ng/kit/up5jpqap";
 
 export function buildWrappKitUrl(balance: number, date?: string, baseUrl: string = DEFAULT_WRAPP_KIT_URL): string {
   const sep = baseUrl.includes("?") ? "&" : "?";
