@@ -175,7 +175,7 @@ async function sendConfirmationEmails(booking: BookingRow, env: Env) {
         <!-- Header -->
         <tr>
           <td style="background-color: #111111; padding: 28px 32px; text-align: center;">
-            <p style="margin: 0 0 6px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #e6b800; font-weight: 800;">Fash Shot It Media</p>
+            <img src="https://fashshotit.com/images/email-logo.png" alt="Fash Shot It" width="120" style="display: block; margin: 0 auto 14px; width: 120px; height: auto; border: 0;">
             <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 800; letter-spacing: -0.02em;">Booking & Payment Receipt</h1>
           </td>
         </tr>
@@ -255,22 +255,6 @@ async function sendConfirmationEmails(booking: BookingRow, env: Env) {
               </tr>
             </table>
 
-            <!-- Wrapp Gift Page Callout -->
-            <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background: #fbf9f4; border: 1px solid #e7e2d6; border-radius: 12px; margin-bottom: 24px;">
-              <tr>
-                <td style="padding: 22px 24px;">
-                  <span style="display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #7c3aed; margin-bottom: 6px;">Wrapp by FinZ</span>
-                  <h4 style="margin: 0 0 8px; font-size: 16px; font-weight: 800; color: #111;">Let friends and family cover your balance.</h4>
-                  <p style="margin: 0 0 16px; font-size: 13.5px; line-height: 1.5; color: #555;">
-                    Make a free Wrapp celebration page. Friends and family can send you gifts, and the money goes directly to your own account, not to Fash Shot It. You pay your balance on shoot day as usual.
-                  </p>
-                  <a href="${escapeHtml(buildWrappKitUrl(env.WRAPP_KIT_URL, booking.balance))}" target="_blank" rel="noreferrer" style="display: inline-block; background-color: #111111; color: #ffffff; text-decoration: none; padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: 13px;">
-                    Create your gift page &rarr;
-                  </a>
-                </td>
-              </tr>
-            </table>
-
             <!-- Support -->
             <p style="margin: 0; font-size: 13.5px; line-height: 1.5; color: #666; border-top: 1px solid #eee; padding-top: 18px;">
               Need help or want to adjust details? Chat directly with Fash on WhatsApp at <a href="https://wa.me/2347061874236" style="color: #111; font-weight: 700;">+234 706 187 4236</a> or email <a href="mailto:media@fashshotit.com" style="color: #111;">media@fashshotit.com</a>.
@@ -282,7 +266,7 @@ async function sendConfirmationEmails(booking: BookingRow, env: Env) {
         <tr>
           <td style="background-color: #f7f5f0; padding: 18px 32px; text-align: center; border-top: 1px solid #e8e3d8;">
             <p style="margin: 0; font-size: 12px; color: #888;">
-              &copy; 2026 Fash Shot It Media. Photography, video and drone coverage in Lagos.
+              &copy; 2026 Fash Shot It. <em>Beyond imagination...</em>
             </p>
           </td>
         </tr>

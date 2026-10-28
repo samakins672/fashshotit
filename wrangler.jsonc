@@ -26,7 +26,7 @@
 		// Comma-separated list of inboxes that receive contact form submissions
 		"CONTACT_TO": "media@fashshotit.com,fashshotitmedia@gmail.com",
 		// Must be an address on a domain verified with Resend
-		"CONTACT_FROM": "Fash Shot It Website <noreply@fashshotit.com>",
+		"CONTACT_FROM": "Fash Shot It <noreply@fashshotit.com>",
 		// Wrapp celebration kit URL for UNILAG convocation bookings
 		"WRAPP_KIT_URL": "https://sandbos-app.wrapp.ng/kit/up5jpqap"
 	},
