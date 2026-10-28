@@ -117,7 +117,7 @@ function FloatingWrappKit({
       <a href={giftUrl} target="_blank" rel="noreferrer" className="bk-floating-link">
         <span className="bk-floating-text">
           <WrappWordmark />
-          <span className="bk-floating-cta">Cover {formatNaira(balance)} with gifts</span>
+          <span className="bk-floating-cta">Cover the {formatNaira(balance)} left with gifts</span>
         </span>
         <span className="bk-floating-arrow" aria-hidden="true">
           <Icon name="arrow" size={20} />
