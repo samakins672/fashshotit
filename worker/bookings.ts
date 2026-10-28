@@ -102,6 +102,26 @@ async function verifyPaystackSignature(
   }
 }
 
+/** Sends one email through Resend and says in the logs what happened. Resend answers 4xx (unverified domain, bad key, bad address) without throwing, so the status has to be read. */
+async function sendResend(env: Env, label: string, reference: string, payload: Record<string, unknown>) {
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      console.error(`[Resend] ${label} email for ${reference} was REJECTED: ${res.status} ${await res.text().catch(() => "")}`);
+      return false;
+    }
+    console.log(`[Resend] ${label} email for ${reference} accepted`);
+    return true;
+  } catch (err) {
+    console.error(`[Resend] ${label} email for ${reference} failed to send`, err);
+    return false;
+  }
+}
+
 /** Send confirmation email to client and notification to team */
 async function sendConfirmationEmails(booking: BookingRow, env: Env) {
   if (!env.RESEND_API_KEY) {
@@ -272,46 +292,32 @@ async function sendConfirmationEmails(booking: BookingRow, env: Env) {
   `;
 
   // Send to client
-  await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${env.RESEND_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: env.CONTACT_FROM,
-      to: [booking.email],
-      subject: `Confirmed: UNILAG Convocation Shoot (${booking.reference})`,
-      html: clientHtml,
-    }),
-  }).catch((err) => console.error("Error sending client confirmation email", err));
+  await sendResend(env, "client confirmation", booking.reference, {
+    from: env.CONTACT_FROM,
+    to: [booking.email],
+    subject: `Confirmed: UNILAG Convocation Shoot (${booking.reference})`,
+    html: clientHtml,
+  });
 
   // Notify team
   const teamInboxes = env.CONTACT_TO.split(",").map((s) => s.trim()).filter(Boolean);
-  await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${env.RESEND_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: env.CONTACT_FROM,
-      to: teamInboxes,
-      subject: `New Confirmed Booking: ${booking.reference} (${booking.name})`,
-      html: `
-        <h3>New Confirmed Convocation Booking</h3>
-        <p><strong>Tag:</strong> ${escapeHtml(booking.reference)}</p>
-        <p><strong>Name:</strong> ${escapeHtml(booking.name)}</p>
-        <p><strong>Phone:</strong> ${escapeHtml(booking.phone)}</p>
-        <p><strong>Email:</strong> ${escapeHtml(booking.email)}</p>
-        <p><strong>Faculty / Dept:</strong> ${escapeHtml(booking.faculty || "-")} / ${escapeHtml(booking.department || "-")}</p>
-        <p><strong>Package Size:</strong> ${booking.package_size}</p>
-        <p><strong>Deposit Paid:</strong> ${formatNaira(booking.deposit_paid)}</p>
-        <p><strong>Balance:</strong> ${formatNaira(booking.balance)}</p>
-        <p><strong>Ambassador Code:</strong> ${escapeHtml(booking.ambassador_code || "None")}</p>
-      `,
-    }),
-  }).catch((err) => console.error("Error notifying team of booking", err));
+  await sendResend(env, "team notification", booking.reference, {
+    from: env.CONTACT_FROM,
+    to: teamInboxes,
+    subject: `New Confirmed Booking: ${booking.reference} (${booking.name})`,
+    html: `
+      <h3>New Confirmed Convocation Booking</h3>
+      <p><strong>Tag:</strong> ${escapeHtml(booking.reference)}</p>
+      <p><strong>Name:</strong> ${escapeHtml(booking.name)}</p>
+      <p><strong>Phone:</strong> ${escapeHtml(booking.phone)}</p>
+      <p><strong>Email:</strong> ${escapeHtml(booking.email)}</p>
+      <p><strong>Faculty / Dept:</strong> ${escapeHtml(booking.faculty || "-")} / ${escapeHtml(booking.department || "-")}</p>
+      <p><strong>Package Size:</strong> ${booking.package_size}</p>
+      <p><strong>Deposit Paid:</strong> ${formatNaira(booking.deposit_paid)}</p>
+      <p><strong>Balance:</strong> ${formatNaira(booking.balance)}</p>
+      <p><strong>Ambassador Code:</strong> ${escapeHtml(booking.ambassador_code || "None")}</p>
+    `,
+  });
 }
 
 export async function handleBookings(request: Request, env: Env, url: URL): Promise<Response> {
