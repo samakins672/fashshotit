@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { contact } from "../data/site";
+import { usePageMeta } from "../hooks";
 import { useBasePath } from "./BookingApp";
 import { isPreview } from "./api";
 import { useSettings } from "./useSettings";
@@ -16,6 +17,12 @@ export default function BookingsHome() {
   const { settings } = useSettings();
   const unilag = settings ?? defaultSettings;
   const from = Math.min(...unilag.packages.map((p) => p.total));
+
+  usePageMeta({
+    title: "Book Fash Shot It — Moments worth keeping, shot right.",
+    description: `Studio sessions, video coverage and drone shoots for ${occasions.slice(0, -1).join(", ").toLowerCase()} and ${occasions[occasions.length - 1].toLowerCase()} across Lagos.`,
+    image: "/images/media/events/FSI%20(76%20of%20682).webp",
+  });
 
   return (
     <div className="bk">

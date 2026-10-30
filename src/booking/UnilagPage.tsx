@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
+import { usePageMeta } from "../hooks";
 import { useBasePath } from "./BookingApp";
 import { isPreview } from "./api";
 import { useSettings } from "./useSettings";
@@ -121,6 +122,12 @@ export default function UnilagPage() {
   const base = useBasePath();
   const { settings, error } = useSettings();
   const [ctaRef, ctaOnScreen] = useOnScreen<HTMLAnchorElement>(settings !== null);
+
+  usePageMeta({
+    title: "UNILAG Convocation — Your convocation, shot beautifully | Fash Shot It",
+    description: "Photos, a headshot, your gown and props, all on the day. Book alone or with up to 5 friends.",
+    image: "/images/media/portraits/FSI_7628.webp",
+  });
 
   if (!settings) return <SettingsGate error={error} />;
 
