@@ -46,7 +46,7 @@ export const services = [
   {
     title: "Studio session",
     text: "Portraits, family and group shoots, styled on location or in studio.",
-    image: "/images/media/portraits/FSI_1764.webp",
+    image: "/images/media/portraits/FSI_6412.webp",
     price: formatNaira(100_000),
   },
   {
@@ -58,7 +58,7 @@ export const services = [
   {
     title: "Drone shoot",
     text: "Licensed aerial photos and video that show the whole scale of your event.",
-    image: "/images/media/commercials/DJI_0704.webp",
+    image: "/images/media/commercials/DJI_0311.webp",
     price: formatNaira(200_000),
   },
 ];
@@ -69,7 +69,7 @@ export const included = [
   {
     title: "Convocation-day photos",
     text: "Your graduation moments on campus, edited and delivered in high resolution.",
-    image: "/images/media/portraits/FSI_1222 (2).webp",
+    image: "/images/media/portraits/FSI_4462.webp",
   },
   {
     title: "Professional headshots",
@@ -84,7 +84,7 @@ export const included = [
   {
     title: "Props & backdrops",
     text: "Styled backdrops, balloons and props for photos that look like a celebration.",
-    image: "/images/media/portraits/FSI_4438-2.webp",
+    image: "/images/media/portraits/FSI_5659-Edit.webp",
   },
 ];
 
