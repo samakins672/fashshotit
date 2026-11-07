@@ -124,3 +124,10 @@ export const partners: { name: string; logo?: string; hideName?: boolean }[] = [
   { name: "Partner" },
   { name: "Partner" },
 ];
+
+/** The faculties of the University of Lagos, for the booking form's pick list. */
+export const UNILAG_FACULTIES = [
+  "Architecture", "Arts", "Basic Clinical Sciences", "Basic Medical Sciences", "Clinical Sciences", "Communication and Media Studies",
+  "Computing and Informatics", "Creative Arts", "Dental Sciences", "Education", "Engineering", "Environmental Sciences", "Health Professions",
+  "Law", "Life Sciences", "Management Sciences", "Pharmacy", "Physical and Earth Sciences", "Social Sciences",
+].map((n) => `Faculty of ${n}`);

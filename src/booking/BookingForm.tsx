@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { Link } from "react-router";
 import { useBasePath } from "./BookingApp";
 import { joinWaitlist, startCheckout, type CheckoutRequest } from "./api";
-import { formatDate, formatNaira, peopleLabel, type BookingSettings } from "./data";
+import { UNILAG_FACULTIES, formatDate, formatNaira, peopleLabel, type BookingSettings } from "./data";
 import { Icon } from "./Shell";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -107,7 +107,7 @@ export default function BookingForm({
     if (form.name.trim().split(/\s+/).length < 2) e.name = "Enter your first name and surname.";
     if (!normalisePhone(form.phone)) e.phone = "Enter a Nigerian WhatsApp number, like 0803 123 4567.";
     if (!EMAIL_RE.test(form.email.trim())) e.email = "Enter a valid email address.";
-    if (!form.faculty.trim()) e.faculty = "Enter your faculty.";
+    if (!form.faculty.trim()) e.faculty = "Select your faculty.";
     if (!form.department.trim()) e.department = "Enter your department.";
     if (!form.consent) e.consent = "Please agree to the privacy policy and terms to continue.";
     return e;
@@ -188,7 +188,10 @@ export default function BookingForm({
               />
             </Field>
             <Field label="Faculty" error={errors.faculty}>
-              <input name="faculty" placeholder="e.g. Engineering" value={form.faculty} onChange={(e) => set("faculty", e.target.value)} />
+              <select name="faculty" value={form.faculty} onChange={(e) => set("faculty", e.target.value)}>
+                <option value="">Select your faculty</option>
+                {UNILAG_FACULTIES.map((f) => <option key={f} value={f}>{f}</option>)}
+              </select>
             </Field>
             <Field label="Department" error={errors.department}>
               <input

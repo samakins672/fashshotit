@@ -1536,6 +1536,27 @@ body.bk-body {
   font-weight: 700;
 }
 
+.bk select {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--bk-line);
+  border-radius: 14px;
+  background: var(--bk-surface);
+  color: var(--bk-ink);
+  font: inherit;
+  font-size: 16px;
+}
+
+.bk select:focus {
+  border: 1.5px solid var(--bk-ink);
+  outline: none;
+}
+
+.bk-field.has-error select {
+  border-color: var(--bk-error);
+}
+
 .bk input:not([type="checkbox"]) {
   width: 100%;
   min-height: 52px;
