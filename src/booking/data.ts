@@ -6,11 +6,17 @@
  * yet (local dev, preview builds).
  */
 
+import { processingFee } from "./fees";
+
 export interface BookingPackage {
   /** Number of people, 1–6 */
   size: number;
+  /** What the package costs, with the card/transfer processing fee included. */
   total: number;
+  /** What is paid now (about half), with the processing fee included. */
   deposit: number;
+  /** The processing fee inside the deposit and the total. */
+  fee?: number;
 }
 
 export interface BookingSettings {
@@ -24,15 +30,18 @@ export interface BookingSettings {
   shootPeriod: string;
 }
 
+/** Package prices before the processing fee; the fee is added on top (see fees.ts) and folded into what people see. */
+const basePackages = [
+  { size: 1, total: 35_000, deposit: 17_500 },
+  { size: 2, total: 50_000, deposit: 25_000 },
+  { size: 3, total: 70_000, deposit: 35_000 },
+  { size: 4, total: 80_000, deposit: 40_000 },
+  { size: 5, total: 90_000, deposit: 45_000 },
+  { size: 6, total: 100_000, deposit: 50_000 },
+];
+
 export const defaultSettings: BookingSettings = {
-  packages: [
-    { size: 1, total: 35_000, deposit: 17_500 },
-    { size: 2, total: 50_000, deposit: 25_000 },
-    { size: 3, total: 70_000, deposit: 35_000 },
-    { size: 4, total: 80_000, deposit: 40_000 },
-    { size: 5, total: 90_000, deposit: 45_000 },
-    { size: 6, total: 100_000, deposit: 50_000 },
-  ],
+  packages: basePackages.map((p) => { const fee = processingFee(p.deposit); return { ...p, total: p.total + fee, deposit: p.deposit + fee, fee }; }),
   slotTarget: 50,
   slotsFilled: 0,
   refundDeadline: "March 2027",

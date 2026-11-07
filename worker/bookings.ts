@@ -1,3 +1,5 @@
+import { processingFee } from "../src/booking/fees";
+
 export interface BookingPackage {
   size: number;
   total: number;
@@ -31,6 +33,8 @@ interface BookingRow {
   finz_opt_in: number;
   shoot_period: string;
   paystack_reference: string | null;
+  /** The Paystack processing fee included in the deposit (the deposit refunded is deposit_paid minus this). */
+  fee: number;
   created_at: string;
   paid_at: string | null;
 }
@@ -326,7 +330,8 @@ export async function handleBookings(request: Request, env: Env, url: URL): Prom
     }
 
     const settings: BookingSettings = {
-      packages: PACKAGES,
+      // What a person sees and pays: the processing fee is folded into the deposit and the total. The balance is unchanged.
+      packages: PACKAGES.map((p) => { const fee = processingFee(p.deposit); return { ...p, total: p.total + fee, deposit: p.deposit + fee, fee }; }),
       slotTarget: SLOT_TARGET,
       slotsFilled: Math.min(slotsFilled, SLOT_TARGET),
       refundDeadline: REFUND_DEADLINE,
@@ -405,9 +410,11 @@ export async function handleBookings(request: Request, env: Env, url: URL): Prom
     const surname = (name.split(/\s+/).pop() ?? "GUEST").toUpperCase().replace(/[^A-Z]/g, "") || "GUEST";
     const rand = Math.floor(100 + Math.random() * 900);
     const reference = `FSM-${surname}-${rand}`;
-    const total = pkg.total;
-    const depositPaid = pkg.deposit;
-    const balance = total - depositPaid;
+    // The processing fee is added to the deposit (and so to the total); the balance stays what it was.
+    const fee = processingFee(pkg.deposit);
+    const total = pkg.total + fee;
+    const depositPaid = pkg.deposit + fee;
+    const balance = pkg.total - pkg.deposit;
 
     // Save initial pending booking to D1
     if (env.DB) {
@@ -415,9 +422,9 @@ export async function handleBookings(request: Request, env: Env, url: URL): Prom
         await env.DB.prepare(`
           INSERT INTO bookings (
             reference, status, name, email, phone, faculty, department, members,
-            ambassador_code, package_size, total, deposit_paid, balance,
+            ambassador_code, package_size, total, deposit_paid, balance, fee,
             marketing_opt_in, finz_opt_in, shoot_period, created_at
-          ) VALUES (?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+          ) VALUES (?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
         `)
           .bind(
             reference,
@@ -432,6 +439,7 @@ export async function handleBookings(request: Request, env: Env, url: URL): Prom
             total,
             depositPaid,
             balance,
+            fee,
             marketingOptIn ? 1 : 0,
             finzOptIn ? 1 : 0,
             SHOOT_PERIOD
