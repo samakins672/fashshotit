@@ -1,3 +1,5 @@
+import { processingFee } from "../src/booking/fees";
+
 export interface BookingPackage {
   size: number;
   total: number;
@@ -326,7 +328,8 @@ export async function handleBookings(request: Request, env: Env, url: URL): Prom
     }
 
     const settings: BookingSettings = {
-      packages: PACKAGES,
+      // The deposit is what is sent to Paystack. `fee` is the estimate of what Paystack adds at checkout, so the customer is told before they pay.
+      packages: PACKAGES.map((p) => ({ ...p, fee: processingFee(p.deposit) })),
       slotTarget: SLOT_TARGET,
       slotsFilled: Math.min(slotsFilled, SLOT_TARGET),
       refundDeadline: REFUND_DEADLINE,

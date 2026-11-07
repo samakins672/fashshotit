@@ -277,9 +277,19 @@ export default function BookingForm({
           <span>Balance on shoot day</span>
           <span>{formatNaira(pkg.total - pkg.deposit)}</span>
         </div>
+        <div className="bk-summary-row">
+          <span>Deposit (50%)</span>
+          <span>{formatNaira(pkg.deposit)}</span>
+        </div>
+        {!!pkg.fee && (
+          <div className="bk-summary-row">
+            <span>Processing fee (Paystack)</span>
+            <span>about {formatNaira(pkg.fee)}</span>
+          </div>
+        )}
         <div className="bk-summary-total">
-          <span>Pay today (50%)</span>
-          <strong>{formatNaira(pkg.deposit)}</strong>
+          <span>Pay today</span>
+          <strong>{formatNaira(pkg.deposit + (pkg.fee ?? 0))}</strong>
         </div>
 
         {formError && (
@@ -290,10 +300,10 @@ export default function BookingForm({
 
         <button type="submit" className="bk-btn bk-btn--accent bk-btn--block" disabled={submitting}>
           <Icon name="lock" size={18} />
-          {submitting ? "Opening secure checkout…" : `Pay ${formatNaira(pkg.deposit)} deposit`}
+          {submitting ? "Opening secure checkout…" : `Pay ${formatNaira(pkg.deposit + (pkg.fee ?? 0))}`}
         </button>
         <p className="bk-summary-note">
-          Card, transfer or USSD through Paystack. Full refund if we don't reach {settings.slotTarget} people by{" "}
+          Card, transfer or USSD through Paystack, which adds its processing fee at checkout. Your deposit is refunded if we don't reach {settings.slotTarget} people by{" "}
           {formatDate(settings.refundDeadline)}.
         </p>
       </aside>

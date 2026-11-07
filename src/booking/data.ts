@@ -6,11 +6,16 @@
  * yet (local dev, preview builds).
  */
 
+import { processingFee } from "./fees";
+
 export interface BookingPackage {
   /** Number of people, 1–6 */
   size: number;
   total: number;
+  /** What is paid now (about half). This is what we send to Paystack. */
   deposit: number;
+  /** About what Paystack adds on top at checkout (the customer pays the processing fee). */
+  fee?: number;
 }
 
 export interface BookingSettings {
@@ -24,15 +29,17 @@ export interface BookingSettings {
   shootPeriod: string;
 }
 
+const basePackages = [
+  { size: 1, total: 35_000, deposit: 17_500 },
+  { size: 2, total: 50_000, deposit: 25_000 },
+  { size: 3, total: 70_000, deposit: 35_000 },
+  { size: 4, total: 80_000, deposit: 40_000 },
+  { size: 5, total: 90_000, deposit: 45_000 },
+  { size: 6, total: 100_000, deposit: 50_000 },
+];
+
 export const defaultSettings: BookingSettings = {
-  packages: [
-    { size: 1, total: 35_000, deposit: 17_500 },
-    { size: 2, total: 50_000, deposit: 25_000 },
-    { size: 3, total: 70_000, deposit: 35_000 },
-    { size: 4, total: 80_000, deposit: 40_000 },
-    { size: 5, total: 90_000, deposit: 45_000 },
-    { size: 6, total: 100_000, deposit: 50_000 },
-  ],
+  packages: basePackages.map((p) => ({ ...p, fee: processingFee(p.deposit) })),
   slotTarget: 50,
   slotsFilled: 0,
   refundDeadline: "March 2027",
@@ -120,7 +127,7 @@ export function buildWrappKitUrl(balance: number, date?: string, baseUrl: string
 /** Logos for the partners strip on the UNILAG page. Entries without a logo show as a placeholder tile. */
 export const partners: { name: string; logo?: string; hideName?: boolean }[] = [
   { name: "Wrapp", logo: "/images/partners/wrapp.webp", hideName: true },
-  { name: "FinZ", logo: "/images/partners/finz.webp" },
+  { name: "Paystack", logo: "/images/partners/paystack.webp", hideName: true },
   { name: "Partner" },
   { name: "Partner" },
 ];
