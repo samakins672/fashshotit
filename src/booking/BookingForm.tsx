@@ -293,7 +293,7 @@ export default function BookingForm({
           {submitting ? "Opening secure checkout…" : `Pay ${formatNaira(pkg.deposit)} deposit`}
         </button>
         <p className="bk-summary-note">
-          Card, transfer or USSD through Paystack. The price includes payment processing. Your deposit is refunded if we don't reach {settings.slotTarget} people by{" "}
+          Card, transfer or USSD through Paystack. Full refund if we don't reach {settings.slotTarget} people by{" "}
           {formatDate(settings.refundDeadline)}.
         </p>
       </aside>

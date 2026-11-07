@@ -50,7 +50,7 @@ const terms: Section[] = [
   },
   {
     title: "Minimum numbers",
-    text: "Group shoots like UNILAG Convocation go ahead only if the target is reached by the deadline on the booking page. If not, every deposit is refunded to your original payment method within 10 working days. The payment processing fee included in the price is not refunded.",
+    text: "Group shoots like UNILAG Convocation go ahead only if the target is reached by the deadline on the booking page. If not, every deposit is refunded in full, including processing fees, to your original payment method within 10 working days.",
   },
   {
     title: "Cancellations",

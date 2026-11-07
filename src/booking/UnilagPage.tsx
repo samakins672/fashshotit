@@ -33,7 +33,7 @@ export function SlotsBar({ settings, note }: { settings: BookingSettings; note?:
       {note && (
         <p className="bk-slots-note">
           The shoot goes ahead at {settings.slotTarget} people. If we don't get there by{" "}
-          {formatDate(settings.refundDeadline)}, everyone gets their deposit back.
+          {formatDate(settings.refundDeadline)}, everyone gets a full refund.
         </p>
       )}
     </div>
@@ -43,7 +43,7 @@ export function SlotsBar({ settings, note }: { settings: BookingSettings; note?:
 export const faqs = (s: BookingSettings) => [
   {
     q: "What if the shoot doesn't happen?",
-    a: `If we don't reach ${s.slotTarget} people by ${formatDate(s.refundDeadline)}, the shoot won't go ahead and every deposit is refunded to your original payment method within 10 working days. The payment processing fee included in the price is not refunded.`,
+    a: `If we don't reach ${s.slotTarget} people by ${formatDate(s.refundDeadline)}, the shoot won't go ahead and every deposit is refunded in full, including processing fees, to your original payment method within 10 working days.`,
   },
   {
     q: "When and where is the shoot?",
